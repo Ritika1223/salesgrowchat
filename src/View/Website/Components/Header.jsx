@@ -66,7 +66,7 @@ const HeaderPage = () => {
 
               <div className="logo">
                 <Link to="/">
-                  MLM Project
+                  <img className="site-logo" src="/images/logo2.png" alt="KaKowa" />
                 </Link>
               </div>
 

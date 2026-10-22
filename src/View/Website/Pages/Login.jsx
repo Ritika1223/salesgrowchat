@@ -81,7 +81,8 @@ const [showPassword, setShowPassword] = useState(false);
   return (
 <div className="sg-auth">
   <aside className="sg-auth-panel">
-    <h1>MLM Project</h1>
+    <img className="site-logo" src="/images/logo2.png" alt="KaKowa" />
+    <h1>KaKowa</h1>
     <p>Sign in to chat, go live, and use your coins.</p>
   </aside>
 

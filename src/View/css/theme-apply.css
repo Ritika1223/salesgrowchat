@@ -21,9 +21,9 @@ aside.sidebar {
 }
 
 .brand {
-  background: var(--color-gradient);
-  border-radius: 16px;
-  padding: 10px 12px;
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
 }
 
 .brand .project-name,
@@ -34,6 +34,21 @@ aside.sidebar {
   font-weight: 800;
   font-size: 1.35rem;
   letter-spacing: 0.3px;
+}
+
+.kk-wordmark {
+  width: min(180px, 100%);
+  height: 48px;
+  object-fit: contain;
+  display: block;
+  background: transparent;
+  mix-blend-mode: screen;
+}
+
+.site-logo {
+  height: 48px;
+  width: auto;
+  display: block;
 }
 
 .brand img,
