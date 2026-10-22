@@ -1,5 +1,4 @@
 import Home from './Pages/Home';
-import Login from './Pages/Login';
 import Signup from './Pages/Signup';
 import Success from './Pages/Success';
 import Contact from './Pages/Contact';
@@ -40,7 +39,7 @@ const Routes = [
     },
     {
         path: '/login',
-        element: withHeaderFooter(Login)
+        element: withHeaderFooter(IntroLanding)
     },
     {
         path: '/signup',

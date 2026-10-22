@@ -1,128 +1,169 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
-import { API_CHAT } from "../../../config/api";
-import { isLoggedIn, isGuest } from "../../../utils/auth";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { API_AUTH } from "../../../config/api";
+import { clearGuest, isGuest, isLoggedIn } from "../../../utils/auth";
+import "../../css/kakowa-home.css";
 
-const FLOATING = [
-  { name: "Rohan", mins: "3m", flag: "🇮🇳", pos: "intro-float--tl" },
-  { name: "Sofia", mins: "3m", flag: "✨", pos: "intro-float--tr" },
-  { name: "Neha", mins: "5m", flag: "🇮🇳", pos: "intro-float--bl" },
-  { name: "Arjun", mins: "4m", flag: "🇮🇳", pos: "intro-float--br" },
-];
-
-function formatCount(n) {
-  return Number(n || 0).toLocaleString("en-IN");
-}
+const REMEMBER_KEY = "kk_login_id";
 
 export default function IntroLanding() {
   const navigate = useNavigate();
-  const [liveCount, setLiveCount] = useState(0);
-  const [matchingNow, setMatchingNow] = useState(12840);
+  const location = useLocation();
+  const [loginId, setLoginId] = useState("");
+  const [password, setPassword] = useState("");
+  const [remember, setRemember] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (isLoggedIn() || isGuest()) {
       navigate("/live", { replace: true });
+      return;
+    }
+    const saved = localStorage.getItem(REMEMBER_KEY);
+    if (saved) {
+      setLoginId(saved);
+      setRemember(true);
     }
   }, [navigate]);
 
-  useEffect(() => {
-    let cancelled = false;
-    axios
-      .get(`${API_CHAT}/live/active`)
-      .then((res) => {
-        if (cancelled) return;
-        const sessions = res.data?.sessions || [];
-        const users = sessions.reduce((sum, s) => {
-          const c =
-            typeof s.participantCount === "number"
-              ? s.participantCount
-              : Array.isArray(s.participantIds)
-                ? s.participantIds.length
-                : 1;
-          return sum + c;
-        }, 0);
-        setLiveCount(sessions.length);
-        setMatchingNow(Math.max(users, sessions.length, 1) * 17 + 12823);
-      })
-      .catch(() => {});
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+  const login = async (e) => {
+    e.preventDefault();
+    setError("");
+    if (!loginId.trim() || !password) {
+      setError("Enter your email or mobile number and password.");
+      return;
+    }
+    setLoading(true);
+    try {
+      const res = await fetch(`${API_AUTH}/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone: loginId.trim(), password }),
+      });
+      let data = {};
+      try {
+        data = await res.json();
+      } catch {
+        setError("Unexpected response from server.");
+        setLoading(false);
+        return;
+      }
+      if (!res.ok) {
+        setError(data.message || "Login failed.");
+        setLoading(false);
+        return;
+      }
+      if (data.token) localStorage.setItem("token", data.token);
+      const userFromApi =
+        data.user ||
+        data.data?.user ||
+        data.profile ||
+        (data._id || data.id ? { _id: data._id || data.id } : null);
+      if (userFromApi) {
+        try {
+          localStorage.setItem("auth_user", JSON.stringify(userFromApi));
+        } catch {
+          /* ignore storage errors */
+        }
+      }
+      clearGuest();
+      if (remember) localStorage.setItem(REMEMBER_KEY, loginId.trim());
+      else localStorage.removeItem(REMEMBER_KEY);
+      const next = location.state?.from && location.state.from !== "/login"
+        ? location.state.from
+        : "/live";
+      navigate(next, { replace: true });
+    } catch (err) {
+      setError("Cannot connect to the server. " + err.message);
+    }
+    setLoading(false);
+  };
 
   return (
-    <div className="intro-landing">
-      <div className="intro-landing-glow intro-landing-glow--a"></div>
-      <div className="intro-landing-glow intro-landing-glow--b"></div>
+    <div className="kk-home" style={{ backgroundImage: "url(/images/home.jpeg)" }}>
+      <div className="kk-wrap">
+        <form className="kk-card" onSubmit={login}>
+          <div className="kk-crown">♛</div>
+          <h1>
+            Welcome <span>Back</span>
+          </h1>
+          <p className="kk-lead">Login to continue your chat journey</p>
 
-      <header className="intro-topbar">
-        <div className="intro-brand">
-          <strong>MLM Project</strong>
-        </div>
-        <div className="intro-live-now">
-          <span className="intro-live-dot"></span>
-          Live Now
-          <strong>{formatCount(liveCount || matchingNow)}</strong>
-        </div>
-      </header>
+          <label className="kk-field">
+            <i className="bi bi-envelope"></i>
+            <input
+              type="text"
+              name="loginId"
+              autoComplete="username"
+              placeholder="Enter Email or Mobile Number"
+              value={loginId}
+              onChange={(e) => setLoginId(e.target.value)}
+            />
+          </label>
 
-      <main className="intro-hero">
-        <div className="intro-orbit">
-          {FLOATING.map((person) => (
-            <div key={person.name} className={`intro-float ${person.pos}`}>
-              <div className="intro-float-avatar">
-                <img src="/images/avtar.png" alt="" />
-              </div>
-              <div className="intro-float-meta">
-                <strong>
-                  {person.name} <span>{person.flag}</span>
-                </strong>
-                <span>{person.mins}</span>
-              </div>
-            </div>
-          ))}
+          <label className="kk-field">
+            <i className="bi bi-lock"></i>
+            <input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              autoComplete="current-password"
+              placeholder="Enter Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <button
+              type="button"
+              className="kk-eye"
+              onClick={() => setShowPassword((v) => !v)}
+              aria-label={showPassword ? "Hide password" : "Show password"}
+            >
+              <i className={showPassword ? "bi bi-eye-slash" : "bi bi-eye"}></i>
+            </button>
+          </label>
 
-          <div className="intro-hero-photo">
-            <img src="/images/avtar.png" alt="Live chat" />
-            <span className="intro-heart">
-              <i className="bi bi-heart-fill"></i>
-            </span>
+          <div className="kk-row">
+            <label className="kk-check">
+              <input
+                type="checkbox"
+                checked={remember}
+                onChange={(e) => setRemember(e.target.checked)}
+              />
+              <span>Remember Me</span>
+            </label>
+            <Link to="/contact">Forgot Password?</Link>
           </div>
-        </div>
 
-        <h1>
-          Meet new people
-          <br />
-          <span>&amp; make real connections</span>
-          <br />
-          via Live Chat
-        </h1>
-        <p className="intro-sub">
-          Real people. Random matches, just start talking.
-        </p>
+          {error ? <div className="kk-alert">{error}</div> : null}
 
-        <div className="intro-matching">
-          <span className="intro-matching-dot"></span>
-          <strong>{formatCount(matchingNow)}</strong>
-          <span>Users are Matching Now.</span>
-        </div>
+          <button type="submit" className="kk-login" disabled={loading}>
+            {loading ? "Logging in..." : "Login"}
+            {!loading ? <span aria-hidden>→</span> : null}
+          </button>
 
-        <button
-          type="button"
-          className="intro-guest-btn"
-          onClick={() => navigate("/guest")}
-        >
-          <i className="bi bi-person-fill"></i>
-          Start as a Guest
-        </button>
+          <div className="kk-or">OR</div>
 
-        <div className="intro-auth-links">
-          <Link to="/login">Sign in</Link>
-          <span>·</span>
-          <Link to="/signup">Create account</Link>
-        </div>
-      </main>
+          <button type="button" className="kk-guest" onClick={() => navigate("/guest")}>
+            <i className="bi bi-person-fill"></i>
+            Start as a Guest
+          </button>
+
+          <p className="kk-new">Don&apos;t have an account?</p>
+          <button type="button" className="kk-create" onClick={() => navigate("/signup")}>
+            <i className="bi bi-person-plus"></i>
+            Create New Account
+          </button>
+
+          <p className="kk-legal">
+            By logging in, you agree to our
+            <br />
+            <Link to="/about">Terms &amp; Conditions</Link>
+            {" | "}
+            <Link to="/about">Privacy Policy</Link>
+          </p>
+        </form>
+      </div>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { enterAsGuest, isLoggedIn, isGuest } from "../../../utils/auth";
+import "../../css/kakowa-home.css";
 
 const RANDOM_NAMES = [
   "Rohan",
@@ -97,7 +98,7 @@ export default function GuestStart() {
   };
 
   return (
-    <div className="guest-start">
+    <div className="guest-start kk-screen" style={{ backgroundImage: "url(/images/home.jpeg)" }}>
       <header className="intro-topbar">
         <div className="intro-brand">
           <strong>MLM Project</strong>

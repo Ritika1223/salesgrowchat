@@ -1,16 +1,16 @@
 import React, { useState } from "react";
-import { isGuest } from "../../../utils/auth";
+import { canUseMemberFeatures } from "../../../utils/auth";
 import AuthPromptModal from "./AuthPromptModal";
 
 const LOCK_SELECTOR =
   "button, a, input, select, textarea, label, [role='button']";
 
 export default function GuestActionGuard({ children }) {
-  const guest = isGuest();
+  const limited = !canUseMemberFeatures();
   const [open, setOpen] = useState(false);
 
   const blockIfGuest = (e) => {
-    if (!guest) return;
+    if (!limited) return;
     if (e.target.closest("[data-guest-lock]")) {
       e.preventDefault();
       e.stopPropagation();
@@ -25,7 +25,7 @@ export default function GuestActionGuard({ children }) {
     setOpen(true);
   };
 
-  if (!guest) return children;
+  if (!limited) return children;
 
   return (
     <div

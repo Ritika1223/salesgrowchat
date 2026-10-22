@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useSearchParams } from "react-router-dom";
 import { API_AUTH } from "../../../config/api";
 import { Link, useNavigate } from "react-router-dom";
+import "../../css/kakowa-home.css";
 
 export default function Signup() {
   const registerUrl = `${API_AUTH}/register`;
@@ -119,7 +120,7 @@ export default function Signup() {
 
   return (
 
-    <div>
+    <div className="kk-screen" style={{ backgroundImage: "url(/images/home.jpeg)" }}>
 
       <div className="sg-auth sg-auth-signup">
         <main className="sg-auth-main">
@@ -357,6 +358,11 @@ export default function Signup() {
             </button>
 
           </form>
+
+          <button type="button" className="kk-guest" onClick={() => navigate("/guest")}>
+            <i className="bi bi-person-fill"></i>
+            Start as a Guest
+          </button>
 
           <div className="signup-text">
             Already registered?

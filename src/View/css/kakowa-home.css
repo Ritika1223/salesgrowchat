@@ -1,0 +1,347 @@
+.kk-home,
+.kk-screen,
+.guest-start.kk-screen {
+  min-height: 100vh;
+  width: 100%;
+  background-color: #03060f !important;
+  background-position: center top !important;
+  background-size: cover !important;
+  background-repeat: no-repeat !important;
+  background-attachment: fixed !important;
+}
+
+.kk-home {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 28vh 16px 28px;
+  overflow-x: hidden;
+  color: #f4fbff !important;
+  font-family: Inter, "Segoe UI", system-ui, sans-serif;
+}
+
+.kk-home * {
+  box-sizing: border-box;
+}
+
+.kk-wrap {
+  width: min(480px, 100%);
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.kk-card {
+  position: relative;
+  margin-top: -18px;
+  padding: 22px 18px 16px;
+  border-radius: 28px;
+  background:
+    linear-gradient(180deg, rgba(8, 36, 58, 0.96), rgba(3, 16, 32, 0.98));
+  border: 1.5px solid rgba(80, 230, 255, 0.72);
+  box-shadow:
+    0 0 0 1px rgba(255, 210, 80, 0.18) inset,
+    0 0 28px rgba(0, 200, 255, 0.35),
+    0 18px 40px rgba(0, 0, 0, 0.45);
+}
+
+.kk-crown {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #ffd56a;
+  font-size: 18px;
+  text-shadow: 0 0 10px rgba(255, 200, 60, 0.8);
+}
+
+.kk-card h1 {
+  margin: 4px 0 4px;
+  text-align: center;
+  font-size: 1.7rem;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  color: #fff !important;
+}
+
+.kk-card h1 span {
+  color: #3ee0ff;
+}
+
+.kk-lead {
+  margin: 0 0 16px;
+  text-align: center;
+  color: #d5e7f2 !important;
+  font-size: 0.92rem;
+}
+
+.kk-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding: 0 12px;
+  height: 48px;
+  border-radius: 12px;
+  background: #071422;
+  border: 1px solid rgba(90, 220, 255, 0.45);
+  box-shadow: 0 0 0 1px rgba(255, 196, 60, 0.08) inset;
+}
+
+.kk-field i {
+  color: #8fdfff;
+  font-size: 16px;
+}
+
+.kk-field input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  outline: none;
+  background: transparent !important;
+  color: #fff !important;
+  font-size: 0.95rem;
+}
+
+.kk-field input::placeholder {
+  color: #8ea4b8;
+}
+
+.kk-eye {
+  border: 0;
+  background: transparent;
+  color: #9ad8ee;
+  padding: 0;
+  cursor: pointer;
+}
+
+.kk-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 2px 2px 14px;
+  font-size: 0.86rem;
+}
+
+.kk-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #e8f6ff !important;
+  margin: 0;
+}
+
+.kk-check input {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 1px solid #3ee0ff;
+  background: #062033;
+  display: grid;
+  place-items: center;
+}
+
+.kk-check input:checked {
+  background: #14d6e8;
+  border-color: #14d6e8;
+}
+
+.kk-check input:checked::after {
+  content: "";
+  width: 8px;
+  height: 5px;
+  border-left: 2px solid #042033;
+  border-bottom: 2px solid #042033;
+  transform: rotate(-45deg) translateY(-1px);
+}
+
+.kk-row a,
+.kk-legal a {
+  color: #3ee0ff !important;
+  text-decoration: none;
+}
+
+.kk-alert {
+  margin: 0 0 12px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: rgba(255, 80, 100, 0.12);
+  color: #ffb4c0 !important;
+  font-size: 0.86rem;
+}
+
+.kk-guest,
+.kk-login,
+.kk-create,
+.kk-social button {
+  width: 100%;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.sg-auth .kk-guest {
+  margin-top: 14px;
+}
+
+.kk-guest {
+  height: 52px;
+  border: 1.5px solid #ffe08a;
+  color: #fff !important;
+  background: linear-gradient(90deg, #0e8f9a, #19e0c4 55%, #13b8d8) !important;
+  box-shadow: 0 0 18px rgba(20, 220, 210, 0.45);
+  font-size: 1.05rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.kk-login {
+  height: 52px;
+  border: 1.5px solid #ffe08a;
+  color: #fff !important;
+  background: linear-gradient(90deg, #0e8f9a, #19e0c4 55%, #13b8d8) !important;
+  box-shadow: 0 0 18px rgba(20, 220, 210, 0.45);
+  font-size: 1.05rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.kk-or {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #9fb4c6 !important;
+  font-size: 0.78rem;
+  letter-spacing: 1px;
+  margin: 4px 0 12px;
+}
+
+.kk-or::before,
+.kk-or::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(120, 220, 255, 0.7), transparent);
+}
+
+.kk-social {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.kk-social button {
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: #07182a !important;
+  color: #fff !important;
+  border: 1px solid rgba(80, 220, 255, 0.55);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.kk-g {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: conic-gradient(#ea4335, #fbbc05, #34a853, #4285f4, #ea4335);
+  display: inline-block;
+}
+
+.kk-f {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #1877f2;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  display: grid;
+  place-items: center;
+  line-height: 1;
+}
+
+.kk-new {
+  text-align: center;
+  color: #d5e4ef !important;
+  font-size: 0.88rem;
+  margin-bottom: 10px;
+}
+
+.kk-create {
+  height: 46px;
+  background: transparent !important;
+  color: #e9fbff !important;
+  border: 1.5px solid rgba(80, 230, 255, 0.8);
+  box-shadow: 0 0 12px rgba(0, 200, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.kk-legal {
+  margin: 14px 0 0;
+  text-align: center;
+  color: #9eb0c0 !important;
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
+.kk-start-guest {
+  position: fixed;
+  z-index: 1200;
+  right: 16px;
+  bottom: 96px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 48px;
+  padding: 0 18px;
+  border: 1.5px solid #ffe08a;
+  border-radius: 999px;
+  color: #fff !important;
+  background: linear-gradient(90deg, #0e8f9a, #19e0c4 55%, #13b8d8) !important;
+  box-shadow: 0 0 18px rgba(20, 220, 210, 0.45);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.kk-screen .sg-auth {
+  min-height: 100vh;
+  display: block;
+  background: transparent !important;
+}
+
+.kk-screen .sg-auth-main {
+  min-height: 100vh;
+  background: transparent !important;
+}
+
+.guest-start.kk-screen .intro-topbar,
+.guest-start.kk-screen .guest-card,
+.kk-screen .sg-auth-card {
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 720px) {
+  .kk-home {
+    padding-top: 18vh;
+  }
+  .kk-card h1 { font-size: 1.5rem; }
+}
