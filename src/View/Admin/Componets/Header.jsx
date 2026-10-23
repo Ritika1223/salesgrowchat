@@ -122,7 +122,7 @@ export default function Header() {
             <div
               className="cp-mobile-sidebar-topbar"
             >
-              <img className="kk-wordmark" src="/images/kakowa%20logo.png" alt="KaKowa MChat" />
+              <img className="kk-wordmark" src="/images/logo3.png" alt="KaKowa MChat" />
               <button
                 aria-label="Close menu"
                 onClick={() => setSidebarOpen(false)}
@@ -131,7 +131,7 @@ export default function Header() {
             </div>
           )}
           <div className="brand">
-            <img className="kk-wordmark" src="/images/kakowa%20logo.png" alt="KaKowa MChat" />
+            <img className="kk-wordmark" src="/images/logo3.png" alt="KaKowa MChat" />
           </div>
           <nav className="nav">
             {renderNavLinks()}
