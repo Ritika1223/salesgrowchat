@@ -51,11 +51,11 @@ const NAV_LINKS = [
   label: "Live",
 },
 
-{
-  to: "referral",
-  icon: <i className="bi bi-people-fill"></i>,
-  label: "Referrals",
-},
+// {
+//   to: "referral",
+//   icon: <i className="bi bi-people-fill"></i>,
+//   label: "Referrals",
+// },
 
 {
   to: "wallet",

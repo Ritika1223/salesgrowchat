@@ -2,7 +2,7 @@ import { ToastContainer } from 'react-toastify';
 import { Outlet, RouterProvider, createBrowserRouter } from "react-router-dom";
 import websiteRoute from './View/Website/Route'
 import userRoute from './View/User/Route'
-import adminRoute from './View/Admin/Route'
+// import adminRoute from './View/Admin/Route'
 import StartAsGuestButton from './View/Website/Components/StartAsGuestButton'
 import './View/css/theme.css'
 import './View/css/style.css'
@@ -22,7 +22,11 @@ function AppShell() {
 const App = () => {
   return (<>
         <ToastContainer />
-        <RouterProvider router={createBrowserRouter([{ element: <AppShell />, children: [...websiteRoute, ...userRoute, ...adminRoute] }])} />
+        <RouterProvider router={createBrowserRouter([{ element: <AppShell />, children: [
+          ...websiteRoute,
+          ...userRoute,
+          // ...adminRoute,
+        ] }])} />
   </>)
 }
 
