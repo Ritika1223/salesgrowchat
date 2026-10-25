@@ -822,7 +822,6 @@ select:-webkit-autofill {
 
 .app > main .chat-page .sidebar,
 .app > main .chat-page .sidebar.cp-discover,
-.app > main .chat-page .chat-window,
 .app > main .chat-page .details-panel {
   background: var(--color-surface) !important;
   border: 1px solid var(--color-card-border) !important;
@@ -831,11 +830,24 @@ select:-webkit-autofill {
   box-shadow: 0 8px 20px rgba(14, 143, 154, 0.2) !important;
 }
 
-.app > main .chat-page .cp-discover-profile,
+.app > main .chat-page .chat-window {
+  background: var(--color-surface) !important;
+  border: none !important;
+  border-radius: 20px !important;
+  color: var(--color-ink) !important;
+  box-shadow: none !important;
+}
+
+.app > main .chat-page .cp-discover-profile {
+  background: var(--color-bg-soft) !important;
+  border: 1px solid var(--color-card-border) !important;
+  color: var(--color-ink) !important;
+}
+
 .app > main .chat-page .chat-item.cp-disc-card,
 .app > main .chat-page .chat-user-item {
   background: var(--color-bg-soft) !important;
-  border: 1px solid var(--color-card-border) !important;
+  border: none !important;
   color: var(--color-ink) !important;
 }
 
@@ -892,7 +904,7 @@ select:-webkit-autofill {
 .app > main .chat-page .cp-chat-input-row,
 .app > main .chat-page .cp-groupchat-input-row {
   background: var(--color-surface) !important;
-  border-color: var(--color-card-border) !important;
+  border: none !important;
   color: var(--color-ink) !important;
 }
 

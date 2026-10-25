@@ -18684,20 +18684,24 @@ option{
   background: #121736;
 }
 
+.chat-page .cp-discover .chat-list{
+  gap: 8px;
+}
+
 .chat-page .cp-discover .chat-item.cp-disc-card{
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 10px 12px;
-  margin-bottom: 10px;
+  margin-bottom: 0;
   border-radius: 20px;
   background: linear-gradient(90deg, rgba(49,28,107,0.9), rgba(18,22,52,0.95));
-  border: 1px solid color-mix(in srgb, var(--color-primary) 18%, transparent);
+  border: none;
 }
 
 .chat-page .cp-discover .chat-item.cp-disc-card.active{
   background: linear-gradient(90deg, color-mix(in srgb, var(--color-primary) 38%, transparent), rgba(18,22,52,0.95));
-  border-color: color-mix(in srgb, var(--color-accent) 45%, transparent);
+  border: none;
 }
 
 .cp-disc-avatar{
