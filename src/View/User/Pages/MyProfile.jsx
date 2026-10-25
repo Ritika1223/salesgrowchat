@@ -445,15 +445,15 @@ export default function MyProfile() {
                 }
               </PlanDpRing>
               <h4>
-                @{profile.nickname || "member"}
+                {profile.name || ""}
                 {profile.profileMode === "host" ? (
                   <span className="cp-disc-host" style={{ marginLeft: 8 }}>HOST</span>
                 ) : null}
               </h4>
-              <p>
+              {/* <p>
                 {profile.about ||
                   "MLM Project member"}
-              </p>
+              </p> */}
               {/* STATS */}
               {/* MAIN STATS */}
               <div className="profile-stats">
@@ -532,11 +532,15 @@ export default function MyProfile() {
                   <div className="info-card">
                     <label>Active Plan</label>
                     <h4 className="pink-text">
-                      <PlanCrownWithPrice plan={profile.plan} />
+                      <PlanCrownWithPrice
+                        plan={profile.plan}
+                        planAmount={profile.planAmount}
+                        isActive={profile.isActive}
+                      />
                     </h4>
                   </div>
 
-                  <div className="info-card">
+                  {/* <div className="info-card">
                     <label>Referral Code</label>
                     <div className="referral-box">
                       <h4>{profile.referralCode || "-"}</h4>
@@ -549,7 +553,7 @@ export default function MyProfile() {
                         Copy
                       </button>
                     </div>
-                  </div>
+                  </div> */}
 
                   <div className="info-card">
                     <label>Total Referrals</label>
@@ -557,7 +561,7 @@ export default function MyProfile() {
                   </div>
 
                   <div className="info-card">
-                    <label>Wallet Balance</label>
+                    <label>Coins Balance</label>
                     <h4>
                       {`${Number(profile.walletBalance || 0).toLocaleString()} Coins`}
                     </h4>

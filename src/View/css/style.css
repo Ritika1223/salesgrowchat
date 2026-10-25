@@ -12577,6 +12577,17 @@ color: #fff;
   margin-bottom:30px;
 }
 
+.cp-chat-dash .prox-live-navbar{
+  margin-bottom:10px;
+  padding:16px 18px;
+}
+
+.cp-chat-dash .cp-dash-cards{
+  --bs-gutter-x:0.45rem;
+  --bs-gutter-y:0.45rem;
+  margin-bottom:6px;
+}
+
 .wallet-mini-card{
 height: 100%;
   padding: 32px 26px;
@@ -12802,6 +12813,8 @@ height: 100%;
 	border: 1px solid rgba(255,255,255,.08);
 	box-shadow: 0 25px 60px rgba(0,0,0,.45);
 	margin: 0 auto;
+	box-sizing: border-box;
+	overflow: hidden;
 }
 
 .wallet-close-btn{
@@ -12843,6 +12856,8 @@ height: 100%;
 
 .wallet-input {
 	width: 100%;
+	max-width: 100%;
+	box-sizing: border-box;
 	height: 48px;
 	border: none;
 	outline: none;
@@ -16734,6 +16749,10 @@ option{
 .qr-section{
     text-align:center;
     margin:25px 0;
+    width:100%;
+    max-width:100%;
+    min-width:0;
+    box-sizing:border-box;
 }
 
 /* QR Image */
@@ -16775,25 +16794,34 @@ option{
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
+	gap: 8px;
 	background: #2a0b4d;
 	border: 1px solid rgba(255,255,255,.1);
 	border-radius: 14px;
-	padding: 5px 10px;
+	padding: 8px 10px;
 	margin-top: 12px;
 	color: #fff;
 	font-weight: 600;
-	/* max-width: 350px; */
 	margin-left: auto;
 	margin-right: auto;
+	width: 100%;
+	max-width: 100%;
+	min-width: 0;
+	box-sizing: border-box;
+	overflow: hidden;
 }
 
 /* UPI Text */
 
 .upi-box span{
-    overflow:hidden;
-    text-overflow:ellipsis;
-    white-space:nowrap;
-    font-size:15px;
+    min-width: 0;
+    flex: 1;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    word-break: break-all;
+    white-space: normal;
+    font-size: 15px;
+    line-height: 1.4;
 }
 
 /* Copy Button */
@@ -16812,6 +16840,7 @@ option{
     font-size:13px;
 
     cursor:pointer;
+    flex-shrink: 0;
 
     background:linear-gradient(
         135deg,
@@ -16841,7 +16870,13 @@ option{
 
     .upi-box{
         flex-direction:column;
+        align-items: stretch;
         gap:10px;
+    }
+
+    .upi-box span{
+        width: 100%;
+        text-align: center;
     }
 
     .copy-btn{

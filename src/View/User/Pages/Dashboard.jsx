@@ -49,7 +49,7 @@ export default function Dashboard() {
   const isHost = profile?.profileMode === "host" || profile?.hostApproved;
 
   return (
-    <div className="container-fluid">
+    <div className="container-fluid cp-chat-dash">
       <div className="prox-live-navbar">
         <div className="prox-live-navbar-left">
           <div className="prox-live-logo">
@@ -64,7 +64,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div className="row g-4 wallet-mini-row">
+      <div className="row g-2 cp-dash-cards">
         <div className="col-lg-4 col-md-6">
           <div className="wallet-mini-card">
             <div className="wallet-mini-icon purple">
@@ -100,7 +100,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div className="row g-4" style={{ marginTop: 8 }}>
+      <div className="row g-2 cp-dash-cards">
         <div className="col-md-3 col-6">
           <Link to="/chat" className="wallet-mini-card" style={{ display: "block", textDecoration: "none" }}>
             <div className="wallet-mini-icon purple"><i className="bi bi-chat-dots-fill"></i></div>

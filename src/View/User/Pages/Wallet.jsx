@@ -733,10 +733,19 @@ export default function Wallet() {
                 <h2>Add Funds</h2>
               </div>
               {selectedOffer ? (
-                <p className="qr-text" style={{ fontWeight: 600 }}>
+                <p
+                  className="qr-text"
+                  style={{
+                    fontWeight: 600,
+                    textAlign: "center",
+                    display: "block",
+                    width: "100%",
+                  }}
+                >
                   {Number(selectedOffer.coins).toLocaleString()} coins for ₹
                   {Number(selectedOffer.amount).toLocaleString()}
                 </p>
+           
               ) : null}
 
               {/* QR Code */}
