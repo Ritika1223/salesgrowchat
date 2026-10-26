@@ -818,21 +818,18 @@ select:-webkit-autofill {
   gap: 12px;
   padding: 12px;
   height: calc(100vh - 24px);
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 .app > main .chat-page .sidebar,
 .app > main .chat-page .sidebar.cp-discover,
-.app > main .chat-page .details-panel {
-  background: var(--color-surface) !important;
-  border: 1px solid var(--color-card-border) !important;
-  border-radius: 20px !important;
-  color: var(--color-ink) !important;
-  box-shadow: 0 8px 20px rgba(14, 143, 154, 0.2) !important;
-}
-
+.app > main .chat-page .details-panel,
 .app > main .chat-page .chat-window {
   background: var(--color-surface) !important;
   border: none !important;
+  outline: none !important;
   border-radius: 20px !important;
   color: var(--color-ink) !important;
   box-shadow: none !important;
@@ -1026,5 +1023,30 @@ select:-webkit-autofill {
     width: calc(100% - 8px);
     font-size: 13px;
     padding: 6px 8px;
+  }
+}
+
+.wallet-modal {
+  z-index: 50000 !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+@media (max-width: 768px) {
+  .wallet-modal {
+    align-items: flex-start;
+    padding: 12px 12px calc(20px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  .wallet-modal-box,
+  .wallet-modal-box.payment-modal {
+    max-height: calc(100dvh - 24px) !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .wallet-modal-actions {
+    padding-bottom: 8px;
   }
 }
