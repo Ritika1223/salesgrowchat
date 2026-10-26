@@ -1041,8 +1041,12 @@ export default function ChatPage() {
               </h2>
               <div className="cp-discover-coins">
                 <img src="/images/icon2.png" alt="" className="cp-disc-coin" />
-                <span>{formatCompactCount(user?.totalEarned)} Earned</span>
-              </div>
+                <span>
+  {Number(user?.totalEarned || 0).toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })} Earned
+</span>              </div>
             </div>
             <div className="cp-discover-profile-right">
               <div className="cp-discover-profile-right-row">
@@ -1569,8 +1573,10 @@ export default function ChatPage() {
               </div>
               <div className="details-stat-box">
                 <h4>
-                  {Math.max(0, Number(selectedUser.totalEarned || 0)).toLocaleString()}
-                </h4>
+                {Math.max(0, Number(selectedUser.totalEarned || 0)).toLocaleString(undefined, {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+})}                </h4>
                 <span>Earned</span>
               </div>
             </div>
@@ -1824,7 +1830,10 @@ export default function ChatPage() {
                   </div>
                   <div className="cp-chat-stat-box">
                     <h4>
-                      ₹{Number(selectedUser.totalEarned || 0).toLocaleString()}
+                      ₹{Number(selectedUser.totalEarned || 0).toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}
                     </h4>
                     <span>Earned</span>
                   </div>

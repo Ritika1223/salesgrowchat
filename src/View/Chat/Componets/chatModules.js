@@ -386,7 +386,13 @@ function followerCount(user) {
 }
 
 function earnedAmount(user) {
-  return Math.max(0, Number(user?.totalEarned ?? user?.totalEarning ?? 0) || 0);
+  return Math.max(
+    0,
+    Number(user?.totalEarned ?? user?.totalEarning ?? 0) || 0
+  ).toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
 }
 
 function renderDiscoverChatCard({
