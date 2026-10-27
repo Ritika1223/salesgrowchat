@@ -1,16 +1,9 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
 import AdminLogin from "./Pages/AdminLogin";
-import AdminDashboard from "./Pages/AdminDashboard";
-import Users from "./Pages/Users";
-import Groups from "./Pages/Groups";
-import Stickers from "./Pages/Stickers";
 import AdminHeaderLayout from "./Componets/AdminHeaderLayout";
 import { isAdminLoggedIn } from "../../utils/adminAuth";
-import BankDetailPage from "./Pages/BankDetail";
-import PaymentHistoryPage from "./Pages/PaymentHistory";
-import AddFundPage from "./Pages/AddFund";
-import HostRequestsPage from "./Pages/HostRequests";
+import AdminUserControl from "./Pages/AdminUserControl";
 
 function AdminGuard({ children }) {
   if (!isAdminLoggedIn()) {
@@ -21,18 +14,16 @@ function AdminGuard({ children }) {
 
 function AdminGuardLogin() {
   if (isAdminLoggedIn()) {
-    return <Navigate to="/admin/dashboard" replace />;
+    return <Navigate to="/admin/stop-roi" replace />;
   }
   return <AdminLogin />;
 }
 
 const Routes = [
-  /*
   {
     path: "/admin/login",
     element: <AdminGuardLogin />
   },
-
   {
     path: "/admin",
     element: (
@@ -41,45 +32,11 @@ const Routes = [
       </AdminGuard>
     ),
     children: [
-      {
-        index: true,
-        element: <Navigate to="dashboard" replace />
-      },
-      {
-        path: "dashboard",
-        element: <AdminDashboard />
-      },
-      {
-        path: "users",
-        element: <Users />
-      },
-      {
-        path: "bankDetail",
-        element: <BankDetailPage/>
-      },
-      {
-        path: "payment-history",
-        element: <PaymentHistoryPage />
-      },
-      {
-        path: "add-fund",
-        element: <AddFundPage />
-      },
-      {
-        path: "host-requests",
-        element: <HostRequestsPage />
-      },
-      {
-        path: "groups",
-        element: <Groups />
-      },
-      {
-        path: "stickers",
-        element: <Stickers />
-      }
+      { index: true, element: <Navigate to="stop-roi" replace /> },
+      { path: "stop-roi", element: <AdminUserControl mode="roi" /> },
+      { path: "stop-withdraw", element: <AdminUserControl mode="withdraw" /> },
     ]
   }
-  */
 ];
 
 export default Routes;

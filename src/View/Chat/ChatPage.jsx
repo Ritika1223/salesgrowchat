@@ -27,7 +27,7 @@ import {
   normalizeCategory,
 } from "./Componets/chatModules";
 import { API_BASE, getApiOrigin } from "../../config/api";
-import { PlanDpRing } from "../User/Componets/PlanCrown";
+import { PlanDpRing, PlanCrownBadge } from "../User/Componets/PlanCrown";
 import { setActiveChatPeer } from "../../utils/chatNotifications";
 
 export default function ChatPage() {
@@ -1018,7 +1018,7 @@ export default function ChatPage() {
       {/* LEFT: USERS */}
       <div className="sidebar cp-discover">
         <div className="cp-discover-profile">
-          <PlanDpRing plan={user?.plan} className="cp-disc-avatar cp-disc-avatar-lg">
+          <PlanDpRing plan={user?.plan} planAmount={user?.planAmount} className="cp-disc-avatar cp-disc-avatar-lg">
             {user?.profilePhoto
               ? <img src={user.profilePhoto} alt="profile" />
               : (user?.name?.charAt(0)?.toUpperCase() || "?")
@@ -1032,6 +1032,7 @@ export default function ChatPage() {
   const name = user?.nickname || user?.name || "You";
   return name.length > 5 ? `${name.slice(0, 5)}...` : name;
 })()}                </span>
+                <PlanCrownBadge planAmount={user?.planAmount} />
                 {isHostProfile ? <span className="cp-disc-host">HOST</span> : null}
                 {totalUnread > 0 && (
                   <span className="cp-sidebar-unread-total" title="Total unread messages">
@@ -1256,7 +1257,7 @@ export default function ChatPage() {
                   <i class="bi bi-chevron-left"></i>
                 </button>
               )}
-              <PlanDpRing plan={selectedUser?.plan} className="chat-avatar">
+              <PlanDpRing plan={selectedUser?.plan} planAmount={selectedUser?.planAmount} className="chat-avatar">
                 {selectedUser?.profilePhoto
                   ? <img src={selectedUser.profilePhoto} />
                   : (selectedUser?.name?.[0]?.toUpperCase()) || "U"
@@ -1273,6 +1274,7 @@ export default function ChatPage() {
               >
                 <div className="chat-username">
                   {selectedUser.nickname || selectedUser.name}
+                  <PlanCrownBadge planAmount={selectedUser?.planAmount} />
                   {(selectedUser?.profileMode === "host") && (
                     <span className="cp-host-badge">Host</span>
                   )}
@@ -1491,7 +1493,7 @@ export default function ChatPage() {
                 </button>
               )}
 
-              <PlanDpRing plan={selectedUser?.plan} className="chat-avatar">
+              <PlanDpRing plan={selectedUser?.plan} planAmount={selectedUser?.planAmount} className="chat-avatar">
                 {selectedUser?.profilePhoto ? (
                   <img src={selectedUser.profilePhoto} alt={selectedUser?.name || "User"} />
                 ) : (
@@ -1511,6 +1513,7 @@ export default function ChatPage() {
               >
                 <div className="chat-username">
                   {selectedUser?.name || "Unknown User"}
+                  <PlanCrownBadge planAmount={selectedUser?.planAmount} />
                   {(selectedUser?.profileMode === "host") && (
                     <span className="cp-host-badge">Host</span>
                   )}
@@ -1544,7 +1547,7 @@ export default function ChatPage() {
         {selectedUser ? (
           <>
             <h3 className="details-title">Contact Info</h3>
-            <PlanDpRing plan={selectedUser?.plan} className="big-avatar">
+            <PlanDpRing plan={selectedUser?.plan} planAmount={selectedUser?.planAmount} className="big-avatar">
               {selectedUser.profilePhoto ? (
                 <img src={selectedUser.profilePhoto} alt={selectedUser.name} />
               ) : (
@@ -1555,6 +1558,7 @@ export default function ChatPage() {
             </PlanDpRing>
             <div className="details-name">
               @{selectedUser.nickname || "member"}
+              <PlanCrownBadge planAmount={selectedUser?.planAmount} />
               {selectedUser.profileMode === "host" ? (
                 <span className="cp-host-badge">Host</span>
               ) : null}

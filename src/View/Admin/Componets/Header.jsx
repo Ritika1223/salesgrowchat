@@ -20,49 +20,15 @@ function handleLogout() {
 
 const NAV_LINKS = [
   {
-    to: "admin/dashboard",
-    icon: <i className="bi bi-grid-1x2-fill"></i>,
-    label: "Dashboard",
+    to: "admin/stop-roi",
+    icon: <i className="bi bi-graph-up-arrow"></i>,
+    label: "Stop ROI",
   },
   {
-    to: "admin/bankDetail",
-    icon: <i className="bi bi-bank"></i>,
-    label: "Bank Detail",
+    to: "admin/stop-withdraw",
+    icon: <i className="bi bi-cash-stack"></i>,
+    label: "Stop Withdrawal",
   },
-  {
-    to: "admin/payment-history",
-    icon: <i className="bi bi-receipt"></i>,
-    label: "Payment History",
-  },
-  {
-    to: "admin/add-fund",
-    icon: <i className="bi bi-coin"></i>,
-    label: "Add Fund",
-  },
-  {
-    to: "admin/host-requests",
-    icon: <i className="bi bi-broadcast"></i>,
-    label: "Host Requests",
-  },
-
-  {
-    to: "admin/users",
-    icon: <i className="bi bi-person-circle"></i>,
-    label: "All Users",
-  },
-
-  {
-    to: "admin/groups",
-    icon: <i className="bi bi-chat-dots-fill"></i>,
-    label: "Groups",
-  },
-
-  {
-    to: "admin/stickers",
-    icon: <i className="bi bi-box-seam-fill"></i>,
-    label: "Stickers",
-  },
-
   {
     to: "",
     icon: <i className="bi bi-box-arrow-right"></i>,

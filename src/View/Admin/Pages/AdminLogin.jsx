@@ -50,7 +50,7 @@ const [showPassword, setShowPassword] = useState(false);
       } else if (data.token) {
         setAdminSession(data.token, data.admin || null);
         setSuccess("Signed in.");
-        navigate("/admin/dashboard", { replace: true });
+        navigate("/admin/stop-roi", { replace: true });
       } else {
         setError("No token returned.");
       }
