@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { API_AUTH } from "../../../config/api";
-import { resolveAuthUserId, authJsonHeaders, bearerAuthHeader, getGuestProfile } from "../../../utils/auth";
+import { resolveAuthUserId, authJsonHeaders, bearerAuthHeader, getGuestProfile, endLiveOnSignOut } from "../../../utils/auth";
 import { PlanDpRing, PlanCrownWithPrice } from "../Componets/PlanCrown";
 import Cropper from "react-easy-crop";
 import { getCroppedImg } from "./cropImage";
@@ -293,6 +293,7 @@ export default function MyProfile() {
       await axios.delete(`${API_AUTH}/user/profile`, {
         headers: authJsonHeaders(),
       });
+      await endLiveOnSignOut();
       localStorage.removeItem("token");
       localStorage.removeItem("auth_user");
       localStorage.removeItem("refreshToken");
@@ -519,15 +520,15 @@ export default function MyProfile() {
                     <h4>{profile.phone || "-"}</h4>
                   </div>
 
-                  <div className="info-card">
+                  {/* <div className="info-card">
                     <label>Age</label>
                     <h4>{profile.age || "-"}</h4>
-                  </div>
+                  </div> */}
 
-                  <div className="info-card">
+                  {/* <div className="info-card">
                     <label>City</label>
                     <h4>{profile.city || "-"}</h4>
-                  </div>
+                  </div> */}
 
                   <div className="info-card">
                     <label>Active Plan</label>
@@ -565,11 +566,6 @@ export default function MyProfile() {
                     <h4>
                       {`${Number(profile.walletBalance || 0).toLocaleString()} Coins`}
                     </h4>
-                  </div>
-
-                  <div className="info-card">
-                    <label>Free Messages</label>
-                    <h4>{Number(profile.freeMessagesRemaining || 0)}</h4>
                   </div>
 
                   <div className="info-card">
@@ -696,19 +692,6 @@ export default function MyProfile() {
                           2 Hours Ago
                         </span>
                       </div>
-                      <div className="activity-item">
-                        <div>
-                          <h4>
-                            Free Messages Added
-                          </h4>
-                          <p>
-                            10 free AI chat messages were added to your account.
-                          </p>
-                        </div>
-                        <span>
-                          Yesterday
-                        </span>
-                      </div>
                     </>
                   )}
               </div>
@@ -810,7 +793,7 @@ export default function MyProfile() {
               </div>
 
               {/* NAME */}
-              <div className="cp-form-group">
+              {/* <div className="cp-form-group">
                 <label>Name</label>
                 <input
                   type="text"
@@ -821,7 +804,7 @@ export default function MyProfile() {
                     )
                   }
                 />
-              </div>
+              </div> */}
 
               {/* NICKNAME */}
               <div className="cp-form-group">

@@ -15599,6 +15599,38 @@ option{
     0 0 35px rgba(255,0,170,0.3);
 }
 
+@media (max-width: 768px) {
+  .cp-edit-modal-overlay{
+    z-index: 50000;
+    align-items: flex-start;
+    justify-content: flex-start;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    padding: 16px 12px calc(28px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .cp-edit-modal{
+    max-height: none;
+    overflow: visible;
+    margin: 8px 0 16px;
+    padding: 28px 16px 20px;
+  }
+
+  .cp-save-wrap{
+    position: sticky;
+    bottom: 0;
+    z-index: 3;
+    margin-top: 16px;
+    padding: 14px 0 calc(10px + env(safe-area-inset-bottom, 0px));
+    background: #130124;
+  }
+
+  .cp-save-btn{
+    width: 100%;
+  }
+}
+
 /* =========================
    RESPONSIVE
 ========================= */
@@ -17626,11 +17658,23 @@ option{
 	width: 30px;
 }
 
+.chat-page .chat-messages{
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
 .messages-body{
   position: relative;
   z-index: 2;
-  height: 60vh;
+  flex: 1 1 auto;
+  min-height: 0;
+  height: auto;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
 }
 
 .admin-modal-overlay{
@@ -18950,9 +18994,24 @@ option{
     min-width: 0;
   }
 
+  html:has(.chat-page.cp-mobile),
+  body:has(.chat-page.cp-mobile){
+    overflow: hidden;
+    height: 100%;
+    overscroll-behavior: none;
+  }
+
+  .app:has(.chat-page.cp-mobile){
+    height: 100dvh;
+    max-height: 100dvh;
+    overflow: hidden;
+  }
+
   .app > main:has(.chat-page){
     padding-bottom: 0;
     overflow: hidden;
+    height: 100%;
+    min-height: 0;
   }
 
   .chat-page,
@@ -18990,11 +19049,32 @@ option{
     overflow: hidden;
   }
 
+  .chat-page.cp-mobile .chat-header,
+  .chat-page.cp-mobile .cp-stickers-bar,
+  .chat-page.cp-mobile .cp-chat-input-row,
+  .chat-page.cp-mobile .chat-input,
+  .chat-page.cp-mobile .chat-blocked-msg,
+  .chat-page.cp-mobile .cp-groupchat-header,
+  .chat-page.cp-mobile .cp-groupchat-input-row{
+    flex-shrink: 0;
+  }
+
   .chat-page.cp-mobile .chat-messages{
     flex: 1 1 auto;
     min-height: 0;
-    overflow-y: auto;
-    padding-bottom: 16px;
+    overflow: hidden;
+    padding-bottom: 0;
+  }
+
+  .chat-page.cp-mobile .messages-body{
+    height: auto !important;
+    max-height: none;
+  }
+
+  .chat-page.cp-mobile .cp-chat-input-row,
+  .chat-page.cp-mobile .chat-input{
+    position: relative;
+    bottom: auto;
   }
 }
 

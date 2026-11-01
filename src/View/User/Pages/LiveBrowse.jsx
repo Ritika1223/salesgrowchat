@@ -254,7 +254,7 @@ export default function LiveBrowse() {
                 : host || null;
 
             const hostName =
-              (typeof host === "object" && host?.name) || "Host";
+              (typeof host === "object" && (host?.nickname || host?.name)) || "Host";
 
             const count =
               typeof s.participantCount === "number"

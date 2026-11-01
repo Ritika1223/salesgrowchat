@@ -81,7 +81,7 @@ export default function ChatPage() {
   const [potentialMembers, setPotentialMembers] = useState([]);
   const [selectedMembers, setSelectedMembers] = useState([]);
   const [loadingMembers, setLoadingMembers] = useState(false);
-  const messagesEndRef = useRef(null);
+  const messagesBoxRef = useRef(null);
 
   const openAddMembersModal = async () => {
     try {
@@ -679,9 +679,9 @@ export default function ChatPage() {
   };
 
   useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
+    const box = messagesBoxRef.current;
+    if (box) box.scrollTop = box.scrollHeight;
+    if (window.innerWidth <= 768) window.scrollTo(0, 0);
   }, [messages, selectedUser]);
 
   const [selectedFile, setSelectedFile] = useState(null);
@@ -825,10 +825,12 @@ export default function ChatPage() {
   const openDm = () => {
     if (!canUseMemberFeatures()) return;
     if (!selectedUser) return;
+    const cost = Number(isNewDm.newDmCost) || 0;
     setNewDmModal({
       user: selectedUser,
-      newDmCost: isNewDm.newDmCost,
+      newDmCost: cost,
       walletBalance: isNewDm.walletBalance,
+      hostDmFree: Boolean(isNewDm.hostDmFree) || cost === 0,
     });
   };
 
@@ -884,9 +886,13 @@ export default function ChatPage() {
       });
       setSelectedUser(peer);
       setNewDmModal(null);
-      const deducted = data.deducted ?? newDmModal.newDmCost;
+      setIsNewDm({ isNewDm: false });
+      setDmStarted((prev) => ({ ...prev, [peer._id]: true }));
+      const deducted = Number(data.deducted ?? newDmModal.newDmCost) || 0;
       if (!data.alreadyStarted && deducted) {
         toast(`${deducted} coins deducted. You can message ${peer.name || "this user"} now.`);
+      } else if (!data.alreadyStarted) {
+        toast(`You can message ${peer.name || "this user"} now.`);
       }
     } catch (e) {
       const msg = e.response?.data?.message || "Could not start chat";
@@ -1339,20 +1345,16 @@ export default function ChatPage() {
 
 
             <div className="chat-messages">
-              <div className="messages-body">
+              <div className="messages-body" ref={messagesBoxRef}>
               {messages.length === 0 ? (
                 <div className="empty-chat">No messages yet. Say hello!</div>
               ) : (
-                <>
-                  {renderDirectMessagesWithDates({
-                    msgs: messages,
-                    myId,
-                    assetBaseUrl: API_ORIGIN,
-                    onEdit: handleEditMessage,
-
-                  })}
-                  <div ref={messagesEndRef}></div>
-                </>
+                renderDirectMessagesWithDates({
+                  msgs: messages,
+                  myId,
+                  assetBaseUrl: API_ORIGIN,
+                  onEdit: handleEditMessage,
+                })
               )}
               </div>
             </div>
@@ -1952,16 +1954,27 @@ export default function ChatPage() {
             </div>
             <div className="cp-modal-grid">
               <p className="cp-new-dm-alert" role="alert">
-                Starting a new chat with{" "}
-                <strong>{newDmModal.user?.name || "this user"}</strong> costs{" "}
-                <strong>{newDmModal.newDmCost} coins</strong>. This amount is
-                deducted when you confirm. Your balance:{" "}
-                <strong>
-                  {Number(newDmModal.walletBalance || 0).toLocaleString()} 🪙
-                </strong>
-                .
+                {newDmModal.hostDmFree ? (
+                  <>
+                    Starting a new chat with{" "}
+                    <strong>{newDmModal.user?.name || "this user"}</strong> is
+                    free for hosts. No coins will be deducted.
+                  </>
+                ) : (
+                  <>
+                    Starting a new chat with{" "}
+                    <strong>{newDmModal.user?.name || "this user"}</strong> costs{" "}
+                    <strong>{newDmModal.newDmCost} coins</strong>. This amount is
+                    deducted when you confirm. Your balance:{" "}
+                    <strong>
+                      {Number(newDmModal.walletBalance || 0).toLocaleString()} 🪙
+                    </strong>
+                    .
+                  </>
+                )}
               </p>
-              {(Number(newDmModal.walletBalance) || 0) <
+              {!newDmModal.hostDmFree &&
+              (Number(newDmModal.walletBalance) || 0) <
                 (Number(newDmModal.newDmCost) || 0) ? (
                 <p className="cp-new-dm-insufficient">
                   You do not have enough coins. Add coins in your wallet, then try
@@ -1981,13 +1994,18 @@ export default function ChatPage() {
                   type="button"
                   disabled={
                     newDmConfirmLoading ||
-                    (Number(newDmModal.walletBalance) || 0) <
-                    (Number(newDmModal.newDmCost) || 0)
+                    (!newDmModal.hostDmFree &&
+                      (Number(newDmModal.walletBalance) || 0) <
+                      (Number(newDmModal.newDmCost) || 0))
                   }
                   onClick={confirmNewDm}
                   className="cp-modal-create"
                 >
-                  {newDmConfirmLoading ? "Please wait…" : "Confirm & pay"}
+                  {newDmConfirmLoading
+                    ? "Please wait…"
+                    : newDmModal.hostDmFree
+                      ? "Start chat"
+                      : "Confirm & pay"}
                 </button>
               </div>
             </div>

@@ -214,7 +214,7 @@ export default function Referral() {
           REFERRAL CODE
           ========================= */}
 
-          <div className="refx-copy-box">
+          {/* <div className="refx-copy-box">
 
             <div className="refx-copy-left">
 
@@ -230,7 +230,7 @@ export default function Referral() {
 
             </div>
 
-            {/* <button
+            <button
               onClick={handleCopyCode}
               disabled={!referralCode}
               className="refx-copy-action"
@@ -238,9 +238,9 @@ export default function Referral() {
               <i className="bi bi-copy"></i>
 
               Copy Code
-            </button> */}
+            </button>
 
-          </div>
+          </div> */}
 
           {/* =========================
           REFERRAL LINK

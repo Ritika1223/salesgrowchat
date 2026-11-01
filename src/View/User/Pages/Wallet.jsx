@@ -360,7 +360,8 @@ export default function Wallet() {
                       : walletError
                         ? "0"
                         : Number(walletAmount || 0).toLocaleString()}
-                  </h1>
+                           <span className="wallet-balance-subname text-small">Coins</span>
+                  </h1> 
 
                   <div className="wallet-balance-footer">
 

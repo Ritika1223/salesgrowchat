@@ -83,8 +83,13 @@ export default function LiveRoom() {
     session?.hostId && typeof session.hostId === "object"
       ? session.hostId._id
       : session?.hostId;
+  const hostRecord =
+    session?.hostId && typeof session.hostId === "object" ? session.hostId : null;
   const hostName =
-    (session?.hostId && typeof session.hostId === "object" && session.hostId.name) ||
+    hostProfile?.nickname ||
+    hostRecord?.nickname ||
+    hostProfile?.name ||
+    hostRecord?.name ||
     "Host";
   const isHost = Boolean(myId && hostUid && String(myId) === String(hostUid));
   const isActive = session?.status === "active";
@@ -123,7 +128,8 @@ export default function LiveRoom() {
   }, [hostUid, member, session]);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    const box = messagesEndRef.current;
+    if (box) box.scrollTop = box.scrollHeight;
   };
 
   useEffect(() => {
@@ -246,11 +252,11 @@ export default function LiveRoom() {
 
           let senderName = "";
           if (!mine) {
+            const nickOf = (person) => person?.nickname || person?.name || "";
             if (msg.senderName) senderName = msg.senderName;
-            else if (msg.sender && msg.sender.name) senderName = msg.sender.name;
-            else if (msg.senderId && hostProfile && msg.senderId === hostProfile._id) senderName = hostProfile.name || hostName;
-            else if (msg.senderId === hostProfile?._id) senderName = hostProfile.name || hostName;
-            if (!senderName && msg.senderId && hostUid && msg.senderId === hostUid) senderName = hostName;
+            else if (msg.sender) senderName = nickOf(msg.sender);
+            else if (msg.senderId && hostProfile && String(msg.senderId) === String(hostProfile._id)) senderName = nickOf(hostProfile) || hostName;
+            if (!senderName && msg.senderId && hostUid && String(msg.senderId) === String(hostUid)) senderName = hostName;
             if (!senderName) senderName = "User";
           }
 
@@ -436,21 +442,18 @@ export default function LiveRoom() {
           borderRadius: 18
         }}></div> */}
         {/* MESSAGES */}
-        <div className="live-messages-area">
+        <div className="live-messages-area" ref={messagesEndRef}>
           {messages.length === 0 ? (
             <div className="no-message-box">
               <i className="bi bi-chat-heart"></i>
               <p>No messages yet</p>
             </div>
           ) : (
-            <>
-              <CustomRenderMessagesWithDates
-                msgs={messages}
-                myId={myId}
-                assetBaseUrl={API_ORIGIN}
-              />
-              <div ref={messagesEndRef} />
-            </>
+            <CustomRenderMessagesWithDates
+              msgs={messages}
+              myId={myId}
+              assetBaseUrl={API_ORIGIN}
+            />
           )}
         </div>
       </div>

@@ -14,7 +14,7 @@ export default function GroupChatPage({ group, groupId, myId, onBack, onOpenInfo
   const [text, setText] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
-  const messagesEndRef = useRef(null);
+  const messagesBoxRef = useRef(null);
 
   const fetchGroupMessages = useCallback(async () => {
     if (!groupId || !myId) return;
@@ -39,9 +39,9 @@ export default function GroupChatPage({ group, groupId, myId, onBack, onOpenInfo
   }, [groupId]);
 
   useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
+    const box = messagesBoxRef.current;
+    if (box) box.scrollTop = box.scrollHeight;
+    if (window.innerWidth <= 768) window.scrollTo(0, 0);
   }, [messages]);
 
   const sendGroupMessage = async () => {
@@ -132,6 +132,7 @@ export default function GroupChatPage({ group, groupId, myId, onBack, onOpenInfo
       {/* Messages */}
       <div
         className="cp-groupchat-messages"
+        ref={messagesBoxRef}
       >
         {messages.length === 0 ? (
           <div
@@ -140,15 +141,11 @@ export default function GroupChatPage({ group, groupId, myId, onBack, onOpenInfo
             No messages yet in this group.
           </div>
         ) : (
-          <>
-            {renderGroupMessagesWithDates({
-              msgs: messages,
-              myId,
-              assetBaseUrl: getApiOrigin(API_BASE_URL),
-            })}
-            {/* dummy for scrollbottom */}
-            <div ref={messagesEndRef} />
-          </>
+          renderGroupMessagesWithDates({
+            msgs: messages,
+            myId,
+            assetBaseUrl: getApiOrigin(API_BASE_URL),
+          })
         )}
       </div>
 

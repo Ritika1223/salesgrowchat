@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Outlet } from "react-router-dom";
-import { clearGuest, isGuest, getGuestProfile } from "../../../utils/auth";
+import { isGuest, getGuestProfile, logoutSession } from "../../../utils/auth";
 import GuestActionGuard from "./GuestActionGuard";
 
 
@@ -15,15 +15,7 @@ function useIsMobile() {
 }
 
 function handleLogout() {
-  localStorage.removeItem("token");
-  localStorage.removeItem("refreshToken"); // if you use refresh tokens
-  localStorage.removeItem("auth_user");
-  sessionStorage.removeItem("token");
-  sessionStorage.removeItem("chat_active_peer");
-  sessionStorage.removeItem("chat_active_group");
-  clearGuest();
-  
-  window.location.href = "/";
+  logoutSession();
 }
 
 const NAV_LINKS = [
@@ -48,19 +40,19 @@ const NAV_LINKS = [
 {
   to: "live",
   icon: <i className="bi bi-broadcast-pin"></i>,
-  label: "Live",
+  label: "Chat Live",
 },
 
-// {
-//   to: "referral",
-//   icon: <i className="bi bi-people-fill"></i>,
-//   label: "Referrals",
-// },
+{
+  to: "referral",
+  icon: <i className="bi bi-people-fill"></i>,
+  label: "Referrals",
+},
 
 {
   to: "wallet",
   icon: <i className="bi bi-wallet2"></i>,
-  label: "Coins",
+  label: "Buy Coins",
 },
 
 {
