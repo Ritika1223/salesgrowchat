@@ -2,6 +2,7 @@ import ChatPage from "../Chat/ChatPage";
 import ProtectedHeaderLayout from "./Componets/ProtectedHeaderLayout";
 import Dashboard from "./Pages/Dashboard";
 import Referral from "./Pages/Referral";
+import Withdraw from "./Pages/Withdraw";
 import Wallet from "./Pages/Wallet";
 import LiveBrowse from "./Pages/LiveBrowse";
 import LiveRoom from "./Pages/LiveRoom";
@@ -37,6 +38,7 @@ const Routes = [
       { path: "/chat", element: <ChatPage /> },
       { path: "/live", element: <LiveBrowse /> },
       { path: "/wallet", element: <Wallet /> },
+      { path: "/withdraw", element: <Withdraw /> },
       { path: "/referral", element: <Referral /> },
       { path: "/offers", element: <Navigate to="/wallet" replace /> },
       { path: "/plans", element: <Navigate to="/wallet" replace /> },

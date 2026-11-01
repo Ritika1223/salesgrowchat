@@ -1,6 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
-import { isGuest, getGuestProfile, logoutSession } from "../../../utils/auth";
+import axios from "axios";
+import { API_AUTH } from "../../../config/api";
+import {
+  isGuest,
+  getGuestProfile,
+  logoutSession,
+  getStoredAuthUser,
+  getToken,
+  authJsonHeaders,
+} from "../../../utils/auth";
 import GuestActionGuard from "./GuestActionGuard";
 
 
@@ -56,6 +65,12 @@ const NAV_LINKS = [
 },
 
 {
+  to: "withdraw",
+  icon: <i className="bi bi-cash-stack"></i>,
+  label: "Withdraw Coins",
+},
+
+{
   to: "",
   icon: <i className="bi bi-box-arrow-right"></i>,
   label: "Logout",
@@ -66,13 +81,31 @@ const NAV_LINKS = [
 export default function Header() {
   const isMobile = useIsMobile();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isHost, setIsHost] = useState(() => getStoredAuthUser()?.profileMode === "host");
   const guest = isGuest();
   const guestProfile = guest ? getGuestProfile() : null;
+
+  useEffect(() => {
+    const syncHost = () => setIsHost(getStoredAuthUser()?.profileMode === "host");
+    syncHost();
+    if (getToken()) {
+      axios
+        .get(`${API_AUTH}/user/me`, { headers: authJsonHeaders() })
+        .then((res) => setIsHost(res.data?.user?.profileMode === "host"))
+        .catch(syncHost);
+    }
+    window.addEventListener("auth-user-changed", syncHost);
+    window.addEventListener("storage", syncHost);
+    return () => {
+      window.removeEventListener("auth-user-changed", syncHost);
+      window.removeEventListener("storage", syncHost);
+    };
+  }, []);
 
   const hrefFor = (to) => (to.startsWith("/") ? to : `/${to}`);
 
   const renderNavLinks = () =>
-    NAV_LINKS.map(({ to, icon, label, onClick }) => {
+    NAV_LINKS.filter((link) => link.to !== "withdraw" || isHost).map(({ to, icon, label, onClick }) => {
       const isHash = to === "#";
       let active = false;
 

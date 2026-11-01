@@ -55,6 +55,7 @@ export function mergeStoredAuthUser(partial) {
   const cur = getStoredAuthUser() || {};
   try {
     localStorage.setItem("auth_user", JSON.stringify({ ...cur, ...partial }));
+    window.dispatchEvent(new Event("auth-user-changed"));
   } catch {
     // ignore storage errors
   }

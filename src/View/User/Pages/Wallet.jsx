@@ -21,6 +21,7 @@ function historyLabel(item) {
   if (type === "LIVE_TIP") return "Live chat tip";
   if (type === "BUY_COIN" || type === "TOPUP") return "Coins added";
   if (type === "REFERRAL_BONUS") return "Referral bonus";
+  if (type === "WITHDRAW") return desc || "Coin withdrawal";
   return desc || type || "Transaction";
 }
 
@@ -61,7 +62,7 @@ export default function Wallet() {
         headers: authJsonHeaders(),
       })
       .then((res) => {
-        setPaymentSubmissions(Array.isArray(res.data.data) ? res.data.data : []);
+        setPaymentSubmissions(Array.isArray(res.data.data) ? res.data.data.slice(0, 3) : []);
       })
       .catch(() => setPaymentSubmissions([]))
       .finally(() => setLoadingPayments(false));
@@ -110,7 +111,7 @@ export default function Wallet() {
         `${API_CHAT}/payment-history/user/${userId}`,
         { headers: authJsonHeaders() }
       );
-      setPaymentSubmissions(Array.isArray(payRes.data.data) ? payRes.data.data : []);
+      setPaymentSubmissions(Array.isArray(payRes.data.data) ? payRes.data.data.slice(0, 3) : []);
 
       setShowFund(false);
       setSelectedOffer(null);
@@ -203,13 +204,13 @@ export default function Wallet() {
 
     axios
       .get(
-        `${API_CHAT}/wallet/${userId}/transactions?limit=50`,
+        `${API_CHAT}/wallet/${userId}/transactions?limit=10`,
         { headers: authJsonHeaders() }
       )
       .then((res) => {
         setHistory(
           Array.isArray(res.data.transactions)
-            ? res.data.transactions
+            ? res.data.transactions.slice(0, 10)
             : []
         );
       })
@@ -247,12 +248,14 @@ export default function Wallet() {
       );
 
       const txRes = await axios.get(
-        `${API_CHAT}/wallet/${userId}/transactions?limit=50`,
+        `${API_CHAT}/wallet/${userId}/transactions?limit=10`,
         { headers: authJsonHeaders() }
       );
 
       setHistory(
-        txRes.data.transactions || []
+        Array.isArray(txRes.data.transactions)
+          ? txRes.data.transactions.slice(0, 10)
+          : []
       );
 
       setShowTopup(false);

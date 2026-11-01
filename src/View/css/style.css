@@ -12577,6 +12577,13 @@ color: #fff;
   margin-bottom:30px;
 }
 
+.cp-dash-hello{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 .cp-chat-dash .prox-live-navbar{
   margin-bottom:10px;
   padding:16px 18px;
