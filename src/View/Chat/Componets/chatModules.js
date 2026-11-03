@@ -470,16 +470,18 @@ function renderDiscoverChatCard({
         ) : null}
         
 
-        <div className="cp-disc-preview">
-          <span className={`chat-message${unreadCount > 0 ? " has-unread" : ""}`}>
-
-          </span>
-          {renderUnreadBadge(unreadCount)}
-        </div>
+        {lastMsg ? (
+          <div className="cp-disc-preview">
+            <span className={`chat-message${unreadCount > 0 ? " has-unread" : ""}`}>
+              {lastMsg}
+            </span>
+          </div>
+        ) : null}
       </div>
 
       <div className="cp-disc-stats">
         <div className="cp-disc-earn">
+          {renderUnreadBadge(unreadCount)}
           <img src={COIN_ICON} alt="" className="cp-disc-coin" />
           <div>
             <strong>{formatCoinAmount(coinAmount(user))}</strong>

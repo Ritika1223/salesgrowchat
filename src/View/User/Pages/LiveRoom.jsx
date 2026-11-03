@@ -8,6 +8,7 @@ import { appRoute, resolveAuthUserId, authJsonHeaders, canUseMemberFeatures } fr
 import AuthPromptModal from "../Componets/AuthPromptModal";
 import StickersBar from "../../Chat/Componets/StickersBar";
 import { renderGroupMessagesWithDates } from "../../Chat/Componets/chatModules";
+import { blockedShareReason } from "../../../utils/messageGuard";
 
 const API_BASE_URL = API_BASE;
 const DEMO_GIRL_AVATAR = "/images/avtar.png";
@@ -172,6 +173,11 @@ export default function LiveRoom() {
   const sendMessage = async () => {
     if (!requireMember()) return;
     if (!text.trim() || !sessionId || !myId || !isActive) return;
+    const blocked = blockedShareReason(text);
+    if (blocked) {
+      toast(blocked);
+      return;
+    }
     try {
       await axios.post(`${API_BASE_URL}/chat/send-message`, {
         senderId: myId,

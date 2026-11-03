@@ -6,6 +6,7 @@ import { renderGroupMessagesWithDates } from "./Componets/chatModules";
 import StickersBar from "./Componets/StickersBar";
 import { API_BASE, getApiOrigin } from "../../config/api";
 import { setActiveChatGroup } from "../../utils/chatNotifications";
+import { blockedShareReason } from "../../utils/messageGuard";
 
 const API_BASE_URL = API_BASE;
 
@@ -47,6 +48,11 @@ export default function GroupChatPage({ group, groupId, myId, onBack, onOpenInfo
   const sendGroupMessage = async () => {
     if (!text.trim()) return;
     if (!groupId || !myId) return;
+    const blocked = blockedShareReason(text);
+    if (blocked) {
+      toast(blocked);
+      return;
+    }
     try {
       await axios.post(`${API_BASE_URL}/chat/send-message`, {
         senderId: myId,

@@ -31,6 +31,7 @@ import {
 import { API_BASE, getApiOrigin } from "../../config/api";
 import { PlanDpRing, PlanCrownBadge } from "../User/Componets/PlanCrown";
 import { setActiveChatPeer } from "../../utils/chatNotifications";
+import { blockedShareReason } from "../../utils/messageGuard";
 
 export default function ChatPage() {
   const navigate = useNavigate();
@@ -64,6 +65,7 @@ export default function ChatPage() {
   const [messageStats, setMessageStats] = useState(null);
   const [activeTab, setActiveTab] = useState("all");
   const [peopleFilter, setPeopleFilter] = useState("all");
+  const [userSearch, setUserSearch] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
   const [headerChatMenuOpen, setHeaderChatMenuOpen] = useState(false);
@@ -213,15 +215,23 @@ export default function ChatPage() {
     });
   };
 
-  const sortedOtherUsers = sortUsersByLastMessage(filteredOtherUsers, lastConversations);
+  const nameQuery = userSearch.trim().toLowerCase();
+  const searchedOtherUsers = filteredOtherUsers.filter((person) => {
+    if (!nameQuery) return true;
+    const name = String(person?.name || "").toLowerCase();
+    const nickname = String(person?.nickname || "").toLowerCase();
+    return name.includes(nameQuery) || nickname.includes(nameQuery);
+  });
+
+  const sortedOtherUsers = sortUsersByLastMessage(searchedOtherUsers, lastConversations);
 
   const sortedForHost = sortUsersByLastMessage(
-    filteredOtherUsers,
+    searchedOtherUsers,
     lastConversations
   );
 
   const sortedForStartedChats = sortUsersByLastMessage(
-    filteredOtherUsers.filter((user) => dmStarted[user._id] === true),
+    searchedOtherUsers.filter((person) => dmStarted[person._id] === true),
     lastConversations
   );
 
@@ -690,6 +700,11 @@ export default function ChatPage() {
 
   const updateMessage = async () => {
     if (!text.trim() || !editingMessageId) return;
+    const blockedEdit = blockedShareReason(text);
+    if (blockedEdit) {
+      toast.error(blockedEdit);
+      return;
+    }
 
     try {
       await axios.patch(`${API_BASE_URL}/chat/edit-message`, {
@@ -722,6 +737,11 @@ export default function ChatPage() {
       }
 
       if (!text.trim() && !uploadedFile) return;
+      const blocked = blockedShareReason(text);
+      if (blocked) {
+        toast(blocked);
+        return;
+      }
 
       await axios.post(`${API_BASE_URL}/chat/send-message`, {
         senderId: myId,
@@ -1069,6 +1089,11 @@ export default function ChatPage() {
           <div className="cp-discover-profile-grid">
             <div className="cp-discover-profile-left">
               <h2 className="cp-discover-name">
+                {totalUnread > 0 && (
+                  <span className="cp-sidebar-unread-total" title="Total unread messages">
+                    {totalUnread > 99 ? "99+" : totalUnread}
+                  </span>
+                )}
                 <span className="cp-discover-name-text">
                 {(() => {
   const name = user?.nickname || user?.name || "You";
@@ -1076,11 +1101,6 @@ export default function ChatPage() {
 })()}                </span>
                 <PlanCrownBadge planAmount={user?.planAmount} />
                 {isHostProfile ? <span className="cp-disc-host">HOST</span> : null}
-                {totalUnread > 0 && (
-                  <span className="cp-sidebar-unread-total" title="Total unread messages">
-                    {totalUnread > 99 ? "99+" : totalUnread}
-                  </span>
-                )}
               </h2>
               <div className="cp-discover-coins">
                 <img src="/images/icon2.png" alt="" className="cp-disc-coin" />
@@ -1187,6 +1207,26 @@ export default function ChatPage() {
         </div>
 
         <div className="chat-list-wrapper" data-guest-ok="true">
+          <div className="cp-user-search">
+            <i className="bi bi-search" aria-hidden="true" />
+            <input
+              type="text"
+              value={userSearch}
+              onChange={(event) => setUserSearch(event.target.value)}
+              placeholder="Search by name"
+              aria-label="Search users by name"
+            />
+            {userSearch ? (
+              <button
+                type="button"
+                className="cp-user-search-clear"
+                aria-label="Clear search"
+                onClick={() => setUserSearch("")}
+              >
+                <i className="bi bi-x-lg" aria-hidden="true" />
+              </button>
+            ) : null}
+          </div>
           <div className="cp-discover-chips">
             {[
               { id: "all", label: "All", count: otherUsers.length, icon: "bi-grid-fill" },
@@ -1250,7 +1290,11 @@ export default function ChatPage() {
           {activeTab === "all" && (
             <div className="chat-box">
               <div className="chat-list">
-                {sortedOtherUsers.map(renderUserChatItem)}
+                {sortedOtherUsers.length === 0 && nameQuery ? (
+                  <p className="cp-user-search-empty">No user found for “{userSearch.trim()}”.</p>
+                ) : (
+                  sortedOtherUsers.map(renderUserChatItem)
+                )}
               </div>
               {/* {isHostProfile && groups.map(renderGroupChatItem)} */}
             </div>
@@ -1258,14 +1302,22 @@ export default function ChatPage() {
           {activeTab === "host" && (
             <div className="chat-box">
               <div className="chat-list">
-                {sortedForHost.map(renderHostChatItem)}
+                {sortedForHost.filter((person) => person?.profileMode === "host").length === 0 && nameQuery ? (
+                  <p className="cp-user-search-empty">No user found for “{userSearch.trim()}”.</p>
+                ) : (
+                  sortedForHost.map(renderHostChatItem)
+                )}
               </div>
             </div>
           )}
           {activeTab === "chats" && (
             <div className="chat-box">
               <div className="chat-list">
-                {sortedForStartedChats.map(renderUserChatItem)}
+                {sortedForStartedChats.length === 0 && nameQuery ? (
+                  <p className="cp-user-search-empty">No user found for “{userSearch.trim()}”.</p>
+                ) : (
+                  sortedForStartedChats.map(renderUserChatItem)
+                )}
               </div>
             </div>
           )}

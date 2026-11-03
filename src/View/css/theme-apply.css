@@ -853,6 +853,41 @@ select:-webkit-autofill {
   background: var(--color-pale) !important;
 }
 
+.app > main .chat-page .cp-unread-badge,
+.app > main .chat-page .cp-sidebar-unread-total {
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+}
+
+.app > main .chat-page .cp-unread-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 28px !important;
+  min-width: 28px !important;
+  height: 28px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border-radius: 50% !important;
+  background: #f97316 !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+  font-size: 14px !important;
+  font-weight: 800 !important;
+  line-height: 28px !important;
+  text-align: center !important;
+  box-sizing: border-box !important;
+}
+
+.app > main .chat-page .cp-user-search input {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+}
+
 .app > main .chat-page .cp-discover-name,
 .app > main .chat-page .cp-disc-name,
 .app > main .chat-page .chat-username,
