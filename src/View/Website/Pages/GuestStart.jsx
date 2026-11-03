@@ -52,7 +52,7 @@ export default function GuestStart() {
 
   useEffect(() => {
     if (isLoggedIn() || isGuest()) {
-      navigate("/live", { replace: true });
+      navigate("/chat", { replace: true });
     }
   }, [navigate]);
 
@@ -94,7 +94,7 @@ export default function GuestStart() {
       age: form.age,
       city: form.city.trim(),
     });
-    navigate("/live", { replace: true });
+    navigate("/chat", { replace: true });
   };
 
   return (

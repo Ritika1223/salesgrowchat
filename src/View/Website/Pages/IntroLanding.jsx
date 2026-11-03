@@ -18,7 +18,7 @@ export default function IntroLanding() {
 
   useEffect(() => {
     if (isLoggedIn() || isGuest()) {
-      navigate("/live", { replace: true });
+      navigate("/chat", { replace: true });
       return;
     }
     const saved = localStorage.getItem(REMEMBER_KEY);
@@ -73,7 +73,7 @@ export default function IntroLanding() {
       else localStorage.removeItem(REMEMBER_KEY);
       const next = location.state?.from && location.state.from !== "/login"
         ? location.state.from
-        : "/live";
+        : "/chat";
       navigate(next, { replace: true });
     } catch (err) {
       setError("Cannot connect to the server. " + err.message);

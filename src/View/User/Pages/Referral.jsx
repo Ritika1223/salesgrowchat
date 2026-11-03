@@ -408,7 +408,7 @@ export default function Referral() {
                       ) : (
 
                         <span>
-                          <img src="/images/user.jpg" />
+                          <img src="/images/logo5.jpeg" />
                         </span>
 
                       )}
@@ -434,7 +434,7 @@ export default function Referral() {
                   <div className="refx-history-right">
 
                     <span>
-                      <img src="/images/coin.png" className="w-30" />+{item.amount}
+                      <img src="/images/icon2.png" className="w-30" />+{item.amount}
                     </span>
 
                     <small>

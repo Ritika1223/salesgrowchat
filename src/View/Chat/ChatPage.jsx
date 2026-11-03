@@ -859,6 +859,15 @@ export default function ChatPage() {
         if (data) {
           setSelectedUser(user);
           setIsNewDm(data);
+          if (isMobile && data.isNewDm) {
+            const cost = Number(data.newDmCost) || 0;
+            setNewDmModal({
+              user,
+              newDmCost: cost,
+              walletBalance: data.walletBalance,
+              hostDmFree: Boolean(data.hostDmFree) || cost === 0,
+            });
+          }
           return;
         }
       } catch (e) {

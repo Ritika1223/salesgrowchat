@@ -69,7 +69,7 @@ const [showPassword, setShowPassword] = useState(false);
         setSuccess('Login successful!');
         const next = location.state?.from && location.state.from !== "/login"
           ? location.state.from
-          : "/live";
+          : "/chat";
         navigate(next, { replace: true });
       }
     } catch (err) {
