@@ -21,6 +21,7 @@ function historyLabel(item) {
   if (type === "LIVE_TIP") return "Live chat tip";
   if (type === "BUY_COIN" || type === "TOPUP") return "Coins added";
   if (type === "REFERRAL_BONUS") return "Referral bonus";
+  if (type === "FOLLOW_BONUS") return "Follow bonus";
   if (type === "WITHDRAW") return desc || "Coin withdrawal";
   return desc || type || "Transaction";
 }

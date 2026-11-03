@@ -15180,6 +15180,15 @@ select:-webkit-autofill {
   font-size:20px;
   font-weight:800;
   margin-bottom:3px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+}
+
+.details-stat-box h4 .cp-disc-coin{
+  width:18px;
+  height:18px;
 }
 
 .details-stat-box span{
@@ -15306,6 +15315,15 @@ select:-webkit-autofill {
   font-size:18px;
   font-weight:800;
   margin-bottom:3px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+}
+
+.cp-chat-stat-box h4 .cp-disc-coin{
+  width:18px;
+  height:18px;
 }
 
 .cp-chat-stat-box span{
@@ -16172,6 +16190,256 @@ option{
 
 .income-history-select option{
   color:#000;
+}
+
+.income-history-page{
+  padding-top:16px;
+}
+
+.team-level-filter{
+  justify-content:flex-start;
+  gap:12px;
+}
+
+.team-level-label{
+  color:#fff;
+  margin:0;
+  font-size:15px;
+  font-weight:600;
+  flex-shrink:0;
+}
+
+.team-level-select{
+  width:100%;
+  max-width:320px;
+}
+
+.team-tree-empty{
+  color:#cfc8e6;
+  margin:18px 0 0;
+  text-align:center;
+}
+
+.dt-tree{
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:8px 0 28px;
+  background:none;
+  border:none;
+  box-shadow:none;
+}
+
+.dt-root{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
+  text-align:center;
+}
+
+.dt-root strong{
+  color:#fff;
+  font-size:15px;
+}
+
+.dt-root > span:last-child{
+  color:#c4b5fd;
+  font-size:12px;
+  letter-spacing:0.04em;
+}
+
+.dt-avatar{
+  width:54px;
+  height:54px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#94a3b8;
+  color:#fff;
+  font-size:26px;
+  box-shadow:0 0 0 4px rgba(148,163,184,0.25);
+}
+
+.dt-avatar-root{
+  width:64px;
+  height:64px;
+  font-size:30px;
+}
+
+.dt-avatar.is-active,
+.dt-person.is-active .dt-avatar{
+  background:#22c55e;
+  box-shadow:0 0 0 6px rgba(34,197,94,0.22);
+}
+
+.dt-avatar.is-inactive,
+.dt-person.is-inactive .dt-avatar{
+  background:#94a3b8;
+  box-shadow:0 0 0 4px rgba(148,163,184,0.25);
+}
+
+.dt-level{
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  margin-top:6px;
+}
+
+.dt-level-line{
+  width:100%;
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+  gap:10px;
+}
+
+.dt-bracket{
+  position:relative;
+  margin-top:22px;
+  padding-top:16px;
+}
+
+.dt-bracket::before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:8%;
+  right:8%;
+  height:16px;
+  border:2px solid #8b6cff;
+  border-bottom:none;
+  border-radius:16px 16px 0 0;
+  box-shadow:0 -6px 16px rgba(139,108,255,0.35);
+}
+
+.dt-bracket::after{
+  content:"";
+  position:absolute;
+  top:-22px;
+  left:50%;
+  width:2px;
+  height:22px;
+  background:#8b6cff;
+  box-shadow:0 0 8px rgba(139,108,255,0.8);
+}
+
+.dt-nodes{
+  display:flex;
+  justify-content:center;
+  gap:28px;
+}
+
+.dt-person{
+  width:84px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
+  padding:0;
+  border:none;
+  background:transparent;
+  cursor:pointer;
+  color:#fff;
+}
+
+.dt-person-name,
+.dt-open{
+  display:block;
+  width:100%;
+  text-align:center;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.dt-person-name{
+  font-size:12px;
+  font-weight:600;
+}
+
+.dt-open{
+  font-size:12px;
+  color:#ddd6fe;
+}
+
+.dt-id{
+  display:block;
+  width:100%;
+  text-align:center;
+  font-size:10px;
+  color:#c4b5fd;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.dt-person.is-open .dt-avatar{
+  outline:3px solid #fff;
+  outline-offset:3px;
+}
+
+.dt-branch .dt-branch{
+  margin-top:22px;
+}
+
+.dt-page{
+  flex-shrink:0;
+  align-self:center;
+  margin-top:28px;
+  height:32px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  color:#fff !important;
+  font-size:12px;
+  font-weight:700;
+}
+
+.dt-page-more{
+  min-width:58px;
+  padding:0 10px;
+  background:linear-gradient(135deg, var(--color-primary), var(--color-accent));
+}
+
+.dt-page-prev{
+  width:32px;
+  background:rgba(255,255,255,0.12);
+  font-size:18px;
+}
+
+@media (max-width: 767px){
+  .dt-nodes{
+    gap:16px;
+  }
+  .dt-person{
+    width:72px;
+  }
+  .dt-avatar{
+    width:48px;
+    height:48px;
+    font-size:22px;
+  }
+  .dt-avatar-root{
+    width:58px;
+    height:58px;
+  }
+}
+
+.app > main .dt-avatar,
+.app > main .dt-person.is-inactive .dt-avatar,
+.app > main .dt-avatar.is-inactive {
+  color: #fff !important;
+  background: #94a3b8 !important;
+}
+
+.app > main .dt-person.is-active .dt-avatar,
+.app > main .dt-avatar.is-active {
+  color: #fff !important;
+  background: #22c55e !important;
 }
 
 /* =========================================
@@ -18939,7 +19207,8 @@ option{
 .cp-disc-earn strong{
   display: block;
   font-size: 13px;
-  line-height: 1;
+  line-height: 1.2;
+  white-space: nowrap;
 }
 
 .cp-disc-earn span{

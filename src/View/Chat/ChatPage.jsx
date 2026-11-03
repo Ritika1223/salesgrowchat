@@ -23,6 +23,8 @@ import {
   renderDirectMessagesWithDates,
   matchesPeopleFilter,
   formatCompactCount,
+  coinAmount,
+  formatCoinAmount,
   normalizeSex,
   normalizeCategory,
 } from "./Componets/chatModules";
@@ -1000,9 +1002,34 @@ export default function ChatPage() {
         { targetUserId: selected },
         { headers: authJsonHeaders() }
       );
-      if (fol?.data?.success) {
-        toast(fol?.data?.message);
+      if (!fol?.data?.success) return;
+      const followed = fol.data.followed !== false && fol.data.message !== "Unfollowed";
+      const patchFollowers = (person) => {
+        if (!person || String(person._id) !== String(selected)) return person;
+        const list = Array.isArray(person.followers) ? [...person.followers] : [];
+        const has = list.some((id) => String(id) === String(myId));
+        if (followed && !has) list.push(myId);
+        if (!followed && has) {
+          return { ...person, followers: list.filter((id) => String(id) !== String(myId)) };
+        }
+        return { ...person, followers: list };
+      };
+      setSelectedUser((prev) => patchFollowers(prev));
+      setUsers((prev) => prev.map(patchFollowers));
+      const coinsAwarded = Number(fol.data.coinsAwarded) || 0;
+      if (coinsAwarded > 0) {
+        setUser((prev) => (
+          prev
+            ? {
+              ...prev,
+              walletBalance: fol.data.walletBalance != null
+                ? Number(fol.data.walletBalance)
+                : (Number(prev.walletBalance) || 0) + coinsAwarded,
+            }
+            : prev
+        ));
       }
+      toast(fol.data.message);
     } catch (err) {
       toast(err.response?.data?.message || "Error");
     }
@@ -1058,11 +1085,8 @@ export default function ChatPage() {
               <div className="cp-discover-coins">
                 <img src="/images/icon2.png" alt="" className="cp-disc-coin" />
                 <span>
-  {Number(user?.totalEarned || 0).toLocaleString(undefined, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })} Earned
-</span>              </div>
+                  {formatCoinAmount(coinAmount(user))} coins
+                </span>              </div>
             </div>
             <div className="cp-discover-profile-right">
               <div className="cp-discover-profile-right-row">
@@ -1588,11 +1612,10 @@ export default function ChatPage() {
               </div>
               <div className="details-stat-box">
                 <h4>
-                {Math.max(0, Number(selectedUser.totalEarned || 0)).toLocaleString(undefined, {
-  minimumFractionDigits: 2,
-  maximumFractionDigits: 2,
-})}                </h4>
-                <span>Earned</span>
+                  <img src="/images/icon2.png" alt="" className="cp-disc-coin" />
+                  {formatCoinAmount(coinAmount(selectedUser))}
+                </h4>
+                <span>coins</span>
               </div>
             </div>
 
@@ -1845,12 +1868,10 @@ export default function ChatPage() {
                   </div>
                   <div className="cp-chat-stat-box">
                     <h4>
-                      ₹{Number(selectedUser.totalEarned || 0).toLocaleString(undefined, {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                      })}
+                      <img src="/images/icon2.png" alt="" className="cp-disc-coin" />
+                      {formatCoinAmount(coinAmount(selectedUser))}
                     </h4>
-                    <span>Earned</span>
+                    <span>coins</span>
                   </div>
                 </div>
                 {/* Block/Unblock button - mobile (info modal) */}

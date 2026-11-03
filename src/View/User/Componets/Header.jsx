@@ -59,6 +59,18 @@ const NAV_LINKS = [
 },
 
 {
+  to: "team",
+  icon: <i className="bi bi-diagram-3-fill"></i>,
+  label: "My Team",
+},
+
+{
+  to: "tree",
+  icon: <i className="bi bi-diagram-2-fill"></i>,
+  label: "Team Tree",
+},
+
+{
   to: "wallet",
   icon: <i className="bi bi-wallet2"></i>,
   label: "Buy Coins",

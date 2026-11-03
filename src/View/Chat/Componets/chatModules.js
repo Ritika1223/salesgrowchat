@@ -385,13 +385,17 @@ function followerCount(user) {
   return Number(user?.followers) || 0;
 }
 
-function earnedAmount(user) {
-  return Math.max(
-    0,
-    Number(user?.totalEarned ?? user?.totalEarning ?? 0) || 0
-  ).toLocaleString(undefined, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
+export function coinAmount(user) {
+  if (user && user.walletBalance != null && user.walletBalance !== "") {
+    return Math.max(0, Number(user.walletBalance) || 0);
+  }
+  return Math.max(0, Number(user?.totalEarned ?? user?.totalEarning ?? 0) || 0);
+}
+
+export function formatCoinAmount(value) {
+  const num = Math.max(0, Number(value) || 0);
+  return num.toLocaleString("en-IN", {
+    maximumFractionDigits: Number.isInteger(num) ? 0 : 2,
   });
 }
 
@@ -478,8 +482,8 @@ function renderDiscoverChatCard({
         <div className="cp-disc-earn">
           <img src={COIN_ICON} alt="" className="cp-disc-coin" />
           <div>
-            <strong>{formatCompactCount(earnedAmount(user))}</strong>
-            <span>Earn</span>
+            <strong>{formatCoinAmount(coinAmount(user))}</strong>
+            <span>coins</span>
           </div>
         </div>
         <div className="cp-disc-followers">
