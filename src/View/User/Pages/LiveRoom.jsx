@@ -12,6 +12,7 @@ import { blockedShareReason } from "../../../utils/messageGuard";
 
 const API_BASE_URL = API_BASE;
 const DEMO_GIRL_AVATAR = "/images/avtar.png";
+const HOST_IDLE_MS = 10 * 60 * 1000;
 
 function ChatBackgroundSlider({ images = [], interval = 5000 }) {
   const [current, setCurrent] = useState(0);
@@ -76,6 +77,7 @@ export default function LiveRoom() {
   const [galleryPhotos, setGalleryPhotos] = useState([]);
   const [authOpen, setAuthOpen] = useState(false);
   const messagesEndRef = useRef(null);
+  const endedByHostRef = useRef(false);
   const member = canUseMemberFeatures();
 
   const API_ORIGIN = getApiOrigin(API_BASE_URL);
@@ -163,6 +165,71 @@ export default function LiveRoom() {
     const t = setInterval(load, 2500);
     return () => clearInterval(t);
   }, [sessionId, load]);
+
+  useEffect(() => {
+    if (!isHost || !isActive || !sessionId || !myId) return undefined;
+    // Scroll is not host activity: the message list scrolls itself while refreshing.
+    const events = ["mousedown", "keydown", "touchstart"];
+    let idleTimer = 0;
+    let lastArm = 0;
+    let lastPing = 0;
+
+    const endBecauseIdle = async () => {
+      if (endedByHostRef.current) return;
+      endedByHostRef.current = true;
+      try {
+        await axios.post(`${API_BASE_URL}/chat/live/${sessionId}/end`, { userId: myId });
+      } catch {
+        // The server also ends a live after the host stays idle.
+      }
+      toast("Live ended because there was no activity");
+      navigate(appRoute("live"));
+    };
+
+    const ping = () => {
+      const now = Date.now();
+      if (now - lastPing < 20000) return;
+      lastPing = now;
+      axios
+        .post(`${API_BASE_URL}/chat/live/${sessionId}/activity`, { userId: myId })
+        .catch(() => {});
+    };
+
+    const arm = () => {
+      window.clearTimeout(idleTimer);
+      lastArm = Date.now();
+      idleTimer = window.setTimeout(endBecauseIdle, HOST_IDLE_MS);
+    };
+
+    const onActivity = () => {
+      if (document.visibilityState === "hidden") return;
+      if (Date.now() - lastArm < 2000) return;
+      ping();
+      arm();
+    };
+
+    const onVisible = () => {
+      if (document.visibilityState !== "visible") return;
+      if (Date.now() - lastArm >= HOST_IDLE_MS) endBecauseIdle();
+    };
+
+    arm();
+    ping();
+    events.forEach((name) => window.addEventListener(name, onActivity, { passive: true }));
+    document.addEventListener("visibilitychange", onVisible);
+    return () => {
+      window.clearTimeout(idleTimer);
+      events.forEach((name) => window.removeEventListener(name, onActivity));
+      document.removeEventListener("visibilitychange", onVisible);
+    };
+  }, [isHost, isActive, sessionId, myId, navigate]);
+
+  useEffect(() => {
+    if (!isHost || session?.status !== "ended" || endedByHostRef.current) return;
+    endedByHostRef.current = true;
+    toast("Live ended because there was no activity");
+    navigate(appRoute("live"));
+  }, [isHost, session?.status, navigate]);
 
   const requireMember = () => {
     if (member) return true;
@@ -357,6 +424,7 @@ export default function LiveRoom() {
 
   const endLive = async () => {
     if (!sessionId || !myId || !isHost) return;
+    endedByHostRef.current = true;
     try {
       await axios.post(`${API_BASE_URL}/chat/live/${sessionId}/end`, {
         userId: myId,

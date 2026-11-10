@@ -161,7 +161,7 @@ export function appRoute(subPath = "") {
   return clean ? `/${clean}` : "/";
 }
 
-const IDLE_LOGOUT_MS = 10 * 60 * 1000;
+// const IDLE_LOGOUT_MS = 10 * 60 * 1000;
 
 export async function endLiveOnSignOut() {
   const userId = resolveAuthUserId();
@@ -199,7 +199,8 @@ export async function logoutSession() {
   window.location.href = "/";
 }
 
-/** Log out after 10 minutes with no clicks, typing, or scrolling. */
+/** Not used right now. Account auto logout is turned off in the chat app. */
+/*
 export function startIdleLogout() {
   if (typeof window === "undefined") return () => {};
   const events = ["mousedown", "mousemove", "keydown", "touchstart", "scroll", "wheel"];
@@ -241,4 +242,5 @@ export function startIdleLogout() {
     document.removeEventListener("visibilitychange", onVisible);
   };
 }
+*/
 

@@ -541,17 +541,29 @@ export default function ChatPage() {
     await fetchUnreadCounts();
   }, [myId, selectedUser, markMessagesRead, fetchMessageStats, fetchUnreadCounts]);
 
-  // Immediate fetch + polling for new messages without refresh
+  // Immediate fetch + polling for new messages without refresh.
+  // Skip a tick while the previous load is still running so requests do not pile up.
   useEffect(() => {
     let interval;
-    const run = () => {
-      fetchMessages();
+    let stopped = false;
+    let running = false;
+    const run = async () => {
+      if (stopped || running) return;
+      running = true;
+      try {
+        await fetchMessages();
+      } catch {
+        // The next tick tries again.
+      } finally {
+        running = false;
+      }
     };
     if (selectedUser && myId) {
       run();
       interval = setInterval(run, 2000);
     }
     return () => {
+      stopped = true;
       if (interval) clearInterval(interval);
     };
   }, [fetchMessages, selectedUser, myId]);

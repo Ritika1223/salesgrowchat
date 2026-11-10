@@ -151,12 +151,18 @@ export async function startChatNotifications() {
   });
 
   navigator.serviceWorker?.addEventListener("message", (event) => {
-    if (event.data?.type === "OPEN_CHAT" && event.data.peerId) {
+    if (event.data?.type !== "OPEN_CHAT") return;
+    const url = event.data.url || "";
+    if (url.startsWith("/live")) {
+      window.location.href = url;
+      return;
+    }
+    if (event.data.peerId) {
       window.dispatchEvent(
         new CustomEvent("open-chat-peer", { detail: { peerId: event.data.peerId } })
       );
       if (window.location.pathname !== "/chat") {
-        window.location.href = event.data.url || `/chat?peer=${event.data.peerId}`;
+        window.location.href = url || `/chat?peer=${event.data.peerId}`;
       }
     }
   });
