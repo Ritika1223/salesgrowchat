@@ -12,7 +12,7 @@ import { blockedShareReason } from "../../../utils/messageGuard";
 
 const API_BASE_URL = API_BASE;
 const DEMO_GIRL_AVATAR = "/images/avtar.png";
-const HOST_IDLE_MS = 10 * 60 * 1000;
+const HOST_IDLE_MS = 4 * 60 * 1000;
 
 function ChatBackgroundSlider({ images = [], interval = 5000 }) {
   const [current, setCurrent] = useState(0);
