@@ -492,41 +492,54 @@ export default function ChatPage() {
     }
   }, [myId]);
 
-  // --- Fetch conversations & unread counts as before ---
-  useEffect(() => {
-    if (!myId || users.length === 0) return;
+  // --- Fetch conversations & unread counts, and keep the list fresh without a page refresh ---
+  const fetchConvos = useCallback(async () => {
+    if (!myId) return;
+    try {
+      const res = await axios.get(`${API_BASE_URL}/chat/conversations/${myId}`);
+      const convos = Array.isArray(res.data) ? res.data : [];
+      const resultObj = {};
 
-    const fetchConvos = async () => {
-      try {
-        const res = await axios.get(`${API_BASE_URL}/chat/conversations/${myId}`);
-        const convos = Array.isArray(res.data) ? res.data : [];
-        const resultObj = {};
+      for (const convo of convos) {
+        if (convo.isGroup) continue;
+        const peer = (convo.participants || []).find(
+          (p) => String(p._id || p) !== String(myId),
+        );
+        const peerId = peer?._id || peer;
+        if (!peerId) continue;
 
-        for (const convo of convos) {
-          if (convo.isGroup) continue;
-          const peer = (convo.participants || []).find(
-            (p) => String(p._id || p) !== String(myId),
-          );
-          const peerId = peer?._id || peer;
-          if (!peerId) continue;
-
-          resultObj[String(peerId)] = {
-            lastMessage: convo.lastMessage,
-            type: convo.lastMessageType,
-            updatedAt: convo.lastMessageTime || convo.updatedAt,
-            unreadCount: convo.unreadCount || 0,
-          };
-        }
-
-        setLastConversations(resultObj);
-      } catch {
-        setLastConversations({});
+        resultObj[String(peerId)] = {
+          lastMessage: convo.lastMessage,
+          type: convo.lastMessageType,
+          updatedAt: convo.lastMessageTime || convo.updatedAt,
+          unreadCount: convo.unreadCount || 0,
+        };
       }
-    };
 
+      setLastConversations((prev) => {
+        const next = { ...resultObj };
+        Object.keys(prev).forEach((id) => {
+          const prevTime = new Date(prev[id]?.updatedAt || 0).getTime();
+          const nextTime = new Date(next[id]?.updatedAt || 0).getTime();
+          if (prev[id] && prevTime > nextTime) next[id] = prev[id];
+        });
+        return next;
+      });
+    } catch {
+      // Keep the list already on screen if this refresh fails.
+    }
+  }, [myId]);
+
+  useEffect(() => {
+    if (!myId || users.length === 0) return undefined;
     fetchConvos();
     fetchUnreadCounts();
-  }, [myId, users, fetchUnreadCounts]);
+    const timer = setInterval(() => {
+      fetchConvos();
+      fetchUnreadCounts();
+    }, 3000);
+    return () => clearInterval(timer);
+  }, [myId, users, fetchUnreadCounts, fetchConvos]);
 
   // --- Fetch messages for selected user, POLL for updates every 2s ---
   const fetchMessages = useCallback(async () => {
@@ -581,13 +594,55 @@ export default function ChatPage() {
     };
     const onIncoming = (e) => {
       const payload = e.detail || {};
-      fetchUnreadCounts();
-      if (
-        selectedUser &&
-        String(payload.senderId) === String(selectedUser._id) &&
-        !payload.groupId
-      ) {
+      const senderId = String(payload.senderId || "");
+      if (payload.groupId || !senderId) {
+        fetchUnreadCounts();
+        fetchConvos();
+        return;
+      }
+
+      const open = Boolean(selectedUser && String(selectedUser._id) === senderId);
+      const preview = payload.message || payload.preview || "New message";
+      setLastConversations((prev) => {
+        const current = prev[senderId] || {};
+        return {
+          ...prev,
+          [senderId]: {
+            ...current,
+            lastMessage: payload.preview || preview,
+            type: payload.messageType || current.type || "text",
+            updatedAt: payload.createdAt || new Date().toISOString(),
+            unreadCount: open ? 0 : (Number(current.unreadCount) || 0) + 1,
+          },
+        };
+      });
+      setDmStarted((prev) => ({ ...prev, [senderId]: true }));
+
+      if (open) {
+        setMessages((prev) => {
+          const id = payload.messageId ? String(payload.messageId) : "";
+          if (id && prev.some((m) => String(m._id) === id)) return prev;
+          return [
+            ...prev,
+            {
+              _id: payload.messageId || `live-${Date.now()}`,
+              senderId,
+              receiverId: myId,
+              message: preview,
+              messageType: payload.messageType || "text",
+              type: payload.messageType || "text",
+              createdAt: payload.createdAt || new Date().toISOString(),
+              isRead: false,
+            },
+          ];
+        });
         fetchMessages();
+      } else {
+        setUnreadCounts((prev) => ({
+          ...prev,
+          [senderId]: (Number(prev[senderId]) || 0) + 1,
+        }));
+        setTotalUnread((count) => (Number(count) || 0) + 1);
       }
     };
     window.addEventListener("open-chat-peer", onOpenPeer);
@@ -596,7 +651,7 @@ export default function ChatPage() {
       window.removeEventListener("open-chat-peer", onOpenPeer);
       window.removeEventListener("chat-new-message", onIncoming);
     };
-  }, [users, selectedUser, fetchUnreadCounts, fetchMessages]);
+  }, [users, selectedUser, myId, fetchUnreadCounts, fetchMessages, fetchConvos]);
 
   const fetchGroups = useCallback(async () => {
     try {

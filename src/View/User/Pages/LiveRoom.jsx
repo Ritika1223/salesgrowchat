@@ -301,14 +301,15 @@ export default function LiveRoom() {
             padding: "5px 16px",
             marginBottom: 10,
             borderRadius: 16,
-            fontSize: 12,
+            fontSize: 18,
+            lineHeight: 1.35,
             textShadow: "1px 1px 1px #000",
             wordBreak: "break-word",
             border: "1.5px solid transparent"
           };
 
           let nameStyle = {
-            fontSize: 12,
+            fontSize: 15,
             marginBottom: 3,
             color: "#a640ec",
             TextShadow: "1px 1px 1px #000",
@@ -320,7 +321,7 @@ export default function LiveRoom() {
           } else {
             bubbleStyle.alignSelf = "flex-start";
             bubbleStyle.textshadow = "1px 1px 1px #000";
-            bubbleStyle.fontSize = 12;
+            bubbleStyle.fontSize = 18;
           }
 
           let senderName = "";
@@ -349,7 +350,8 @@ export default function LiveRoom() {
                   ...bubbleStyle,
                   padding: 4,
                   display: "flex",
-                  alignItems: "center",
+                  flexDirection: "column",
+                  alignItems: mine ? "flex-end" : "flex-start",
                   justifyContent: "center",
                   background: mine ? "#4e37d6" : "#171928",
                   border: mine ? "1.5px solid #7968fe" : "2.5px solid #272938",

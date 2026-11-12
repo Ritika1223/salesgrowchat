@@ -32,7 +32,20 @@ export default function GroupChatPage({ group, groupId, myId, onBack, onOpenInfo
 
   useEffect(() => {
     fetchGroupMessages();
+    const timer = setInterval(fetchGroupMessages, 2000);
+    return () => clearInterval(timer);
   }, [fetchGroupMessages]);
+
+  useEffect(() => {
+    const onIncoming = (e) => {
+      const payload = e.detail || {};
+      if (payload.groupId && String(payload.groupId) === String(groupId)) {
+        fetchGroupMessages();
+      }
+    };
+    window.addEventListener("chat-new-message", onIncoming);
+    return () => window.removeEventListener("chat-new-message", onIncoming);
+  }, [groupId, fetchGroupMessages]);
 
   useEffect(() => {
     setActiveChatGroup(groupId || "");

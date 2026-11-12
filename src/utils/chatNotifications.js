@@ -128,14 +128,6 @@ export async function startChatNotifications() {
   if (!token) return;
   started = true;
 
-  if (ENABLE_CHAT_NOTIFICATION_PROMPT) {
-    await requestChatNotificationPermission();
-  }
-
-  if (typeof Notification !== "undefined" && Notification.permission === "granted") {
-    await registerPush();
-  }
-
   const origin = getApiOrigin(API_BASE);
   socket = io(origin, {
     auth: { token },
@@ -149,6 +141,15 @@ export async function startChatNotifications() {
     }
     window.dispatchEvent(new CustomEvent("chat-new-message", { detail: payload }));
   });
+
+  // Do not wait on the permission popup. The in-app alert must show immediately.
+  if (ENABLE_CHAT_NOTIFICATION_PROMPT) {
+    requestChatNotificationPermission().then((permission) => {
+      if (permission === "granted") registerPush();
+    });
+  } else if (typeof Notification !== "undefined" && Notification.permission === "granted") {
+    registerPush();
+  }
 
   navigator.serviceWorker?.addEventListener("message", (event) => {
     if (event.data?.type !== "OPEN_CHAT") return;
