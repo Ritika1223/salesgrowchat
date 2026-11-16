@@ -22,6 +22,7 @@ import {
   createRenderHostChatItem,
   renderDirectMessagesWithDates,
   matchesPeopleFilter,
+  isRecentlyOnline,
   formatCompactCount,
   coinAmount,
   formatCoinAmount,
@@ -192,9 +193,13 @@ export default function ChatPage() {
 
   const maleCount = otherUsers.filter((u) => normalizeSex(u?.sex) === "male").length;
   const femaleCount = otherUsers.filter((u) => normalizeSex(u?.sex) === "female").length;
-  const xlCount = otherUsers.filter((u) => normalizeCategory(u?.category) === "XL").length;
-  const xxlCount = otherUsers.filter((u) => normalizeCategory(u?.category) === "XXL").length;
   const xxxlCount = otherUsers.filter((u) => normalizeCategory(u?.category) === "XXXL").length;
+  const onlineHostCount = otherUsers.filter(
+    (u) => u?.profileMode === "host" && isRecentlyOnline(u)
+  ).length;
+  const onlineUserCount = otherUsers.filter(
+    (u) => (u?.profileMode || "user") !== "host" && isRecentlyOnline(u)
+  ).length;
   const hostCount = otherUsers.filter((u) => u?.profileMode === "host").length;
   const chatsCount = otherUsers.filter((u) => dmStarted[u._id] === true).length;
 
@@ -324,6 +329,35 @@ export default function ChatPage() {
         setUsers([]);
         setMyId("");
       });
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    const pullPresence = () => {
+      axios
+        .get(`${API_BASE_URL}/chat/presence`)
+        .then((res) => {
+          if (cancelled) return;
+          const rows = Array.isArray(res.data?.data) ? res.data.data : [];
+          const active = new Map(
+            rows.map((row) => [String(row.userId), row.lastActiveAt])
+          );
+          setUsers((prev) =>
+            prev.map((person) => {
+              const next = active.get(String(person?._id)) || null;
+              if ((person?.lastActiveAt || null) === next) return person;
+              return { ...person, lastActiveAt: next };
+            })
+          );
+        })
+        .catch(() => {});
+    };
+    pullPresence();
+    const timer = window.setInterval(pullPresence, 20000);
+    return () => {
+      cancelled = true;
+      window.clearInterval(timer);
+    };
   }, []);
 
   // --- Fetch Selected User as before ---
@@ -1299,8 +1333,8 @@ export default function ChatPage() {
               { id: "all", label: "All", count: otherUsers.length, icon: "bi-grid-fill" },
               { id: "male", label: "Male", count: maleCount, icon: "bi-gender-male" },
               { id: "female", label: "Female", count: femaleCount, icon: "bi-gender-female" },
-              { id: "xl", label: "XL", count: xlCount },
-              { id: "xxl", label: "XXL", count: xxlCount },
+              { id: "online-host", label: "Online Host", count: onlineHostCount, icon: "bi-broadcast" },
+              { id: "online-user", label: "Online User", count: onlineUserCount, icon: "bi-person-fill" },
               { id: "xxxl", label: "XXXL", count: xxxlCount },
             ].map((chip) => (
               <button
@@ -1309,7 +1343,13 @@ export default function ChatPage() {
                 className={`cp-disc-chip${peopleFilter === chip.id ? " active" : ""}`}
                 onClick={() => {
                   setPeopleFilter(chip.id);
-                  if (chip.id === "all") setActiveTab("all");
+                  if (
+                    chip.id === "all" ||
+                    chip.id === "online-host" ||
+                    chip.id === "online-user"
+                  ) {
+                    setActiveTab("all");
+                  }
                 }}
               >
                 {chip.icon ? <i className={`bi ${chip.icon}`} aria-hidden="true" /> : null}
@@ -1359,6 +1399,9 @@ export default function ChatPage() {
               <div className="chat-list">
                 {sortedOtherUsers.length === 0 && nameQuery ? (
                   <p className="cp-user-search-empty">No user found for “{userSearch.trim()}”.</p>
+                ) : sortedOtherUsers.length === 0 &&
+                  (peopleFilter === "online-host" || peopleFilter === "online-user") ? (
+                  <p className="cp-user-search-empty">No one online in the last 4 minutes.</p>
                 ) : (
                   sortedOtherUsers.map(renderUserChatItem)
                 )}

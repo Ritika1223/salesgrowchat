@@ -25,6 +25,49 @@ export async function requestChatNotificationPermission() {
 
 let socket = null;
 let started = false;
+let presenceTimer = null;
+let lastInputAt = 0;
+let lastPresenceEmitAt = 0;
+
+const IDLE_LIMIT_MS = 4 * 60 * 1000;
+const PRESENCE_GAP_MS = 20 * 1000;
+const ACTIVITY_EVENTS = ["pointerdown", "keydown", "touchstart", "scroll"];
+
+function markActivity() {
+  lastInputAt = Date.now();
+  emitPresence(false);
+}
+
+function emitPresence(force) {
+  if (!socket || !socket.connected) return;
+  if (typeof document !== "undefined" && document.hidden) return;
+  if (Date.now() - lastInputAt >= IDLE_LIMIT_MS) return;
+  if (!force && Date.now() - lastPresenceEmitAt < PRESENCE_GAP_MS) return;
+  lastPresenceEmitAt = Date.now();
+  socket.emit("presence");
+}
+
+function startPresence() {
+  lastInputAt = Date.now();
+  lastPresenceEmitAt = 0;
+  ACTIVITY_EVENTS.forEach((name) => {
+    window.addEventListener(name, markActivity, { passive: true });
+  });
+  emitPresence(true);
+  presenceTimer = window.setInterval(() => {
+    if (lastInputAt > lastPresenceEmitAt) emitPresence(true);
+  }, PRESENCE_GAP_MS);
+}
+
+function stopPresence() {
+  ACTIVITY_EVENTS.forEach((name) => {
+    window.removeEventListener(name, markActivity);
+  });
+  if (presenceTimer) {
+    window.clearInterval(presenceTimer);
+    presenceTimer = null;
+  }
+}
 
 function urlBase64ToUint8Array(base64String) {
   const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
@@ -134,6 +177,12 @@ export async function startChatNotifications() {
     transports: ["websocket", "polling"],
   });
 
+  socket.on("connect", () => {
+    emitPresence(true);
+  });
+
+  startPresence();
+
   socket.on("new_message", (payload) => {
     showBrowserNotification(payload);
     if (!isViewingThisChat(payload)) {
@@ -171,6 +220,7 @@ export async function startChatNotifications() {
 
 export function stopChatNotifications() {
   started = false;
+  stopPresence();
   if (socket) {
     socket.disconnect();
     socket = null;

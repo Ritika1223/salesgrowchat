@@ -371,11 +371,27 @@ export function normalizeCategory(category) {
   return String(category || "").trim().toUpperCase();
 }
 
+export const ONLINE_IDLE_MS = 4 * 60 * 1000;
+
+export function isRecentlyOnline(user, now = Date.now()) {
+  const stamp = user?.lastActiveAt;
+  if (!stamp) return false;
+  const at = new Date(stamp).getTime();
+  if (!Number.isFinite(at)) return false;
+  return now - at < ONLINE_IDLE_MS;
+}
+
 export function matchesPeopleFilter(user, peopleFilter) {
   const filter = String(peopleFilter || "all").toLowerCase();
   if (!filter || filter === "all") return true;
   if (filter === "male" || filter === "female") {
     return normalizeSex(user?.sex) === filter;
+  }
+  if (filter === "online-host") {
+    return user?.profileMode === "host" && isRecentlyOnline(user);
+  }
+  if (filter === "online-user") {
+    return (user?.profileMode || "user") !== "host" && isRecentlyOnline(user);
   }
   return normalizeCategory(user?.category) === filter.toUpperCase();
 }
