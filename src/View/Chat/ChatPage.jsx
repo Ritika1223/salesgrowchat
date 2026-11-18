@@ -798,6 +798,31 @@ export default function ChatPage() {
   }, [messages, selectedUser]);
 
   const [selectedFile, setSelectedFile] = useState(null);
+  const [filePreviewUrl, setFilePreviewUrl] = useState("");
+  const [isSending, setIsSending] = useState(false);
+  const fileInputRef = useRef(null);
+  const isImageFile = (file) => {
+    if (!file) return false;
+    if (String(file.type || "").startsWith("image/")) return true;
+    return /\.(png|jpe?g|gif|webp|bmp|heic|heif)$/i.test(file.name || "");
+  };
+  const isImageAttachment = isImageFile(selectedFile);
+
+  useEffect(() => {
+    if (!isImageFile(selectedFile)) {
+      setFilePreviewUrl("");
+      return undefined;
+    }
+    const url = URL.createObjectURL(selectedFile);
+    setFilePreviewUrl(url);
+    return () => URL.revokeObjectURL(url);
+  }, [selectedFile]);
+
+  const pickAttachment = (event) => {
+    const file = event.target.files?.[0];
+    if (file) setSelectedFile(file);
+    event.target.value = "";
+  };
 
   const updateMessage = async () => {
     if (!text.trim() || !editingMessageId) return;
@@ -829,7 +854,9 @@ export default function ChatPage() {
     if (editingMessageId) {
       return updateMessage();
     }
+    if (isSending) return;
 
+    setIsSending(true);
     try {
       let uploadedFile = null;
 
@@ -860,24 +887,78 @@ export default function ChatPage() {
 
       fetchMessages();
     } catch (err) {
-      toast(err.response?.data?.message || "Error");
+      const tooLarge = err.response?.status === 413;
+      toast(
+        tooLarge
+          ? "Image is too large to send. Try another photo."
+          : err.response?.data?.message || err.message || "Error"
+      );
+    } finally {
+      setIsSending(false);
     }
   };
 
+  const compressImageFile = (file) =>
+    new Promise((resolve, reject) => {
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = () => {
+        const exportJpeg = (maxEdge, quality) =>
+          new Promise((res, rej) => {
+            const longest = Math.max(img.width, img.height) || 1;
+            const scale = Math.min(1, maxEdge / longest);
+            const width = Math.max(1, Math.round(img.width * scale));
+            const height = Math.max(1, Math.round(img.height * scale));
+            const canvas = document.createElement("canvas");
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext("2d");
+            if (!ctx) {
+              rej(new Error("Could not prepare image"));
+              return;
+            }
+            ctx.drawImage(img, 0, 0, width, height);
+            canvas.toBlob(
+              (blob) => (blob ? res(blob) : rej(new Error("Could not prepare image"))),
+              "image/jpeg",
+              quality
+            );
+          });
+
+        (async () => {
+          const steps = [
+            [1600, 0.72],
+            [1280, 0.6],
+            [960, 0.52],
+            [720, 0.46],
+          ];
+          let blob = null;
+          for (const [edge, quality] of steps) {
+            blob = await exportJpeg(edge, quality);
+            if (blob.size <= 800 * 1024) break;
+          }
+          URL.revokeObjectURL(url);
+          const base = String(file.name || "photo").replace(/\.[^.]+$/, "") || "photo";
+          resolve(new File([blob], `${base}.jpg`, { type: "image/jpeg", lastModified: Date.now() }));
+        })().catch((error) => {
+          URL.revokeObjectURL(url);
+          reject(error);
+        });
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(url);
+        reject(new Error("Could not read this image. Try a JPG or PNG."));
+      };
+      img.src = url;
+    });
+
   const uploadFile = async (file) => {
+    const payload = isImageFile(file) ? await compressImageFile(file) : file;
+
     const formData = new FormData();
+    formData.append("file", payload);
 
-    formData.append("file", file);
-
-    const res = await axios.post(
-      `${API_BASE_URL}/chat/upload`,
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
+    const res = await axios.post(`${API_BASE_URL}/chat/upload`, formData);
 
     return res.data.file;
   };
@@ -1331,11 +1412,11 @@ export default function ChatPage() {
           <div className="cp-discover-chips">
             {[
               { id: "all", label: "All", count: otherUsers.length, icon: "bi-grid-fill" },
-              { id: "male", label: "Male", count: maleCount, icon: "bi-gender-male" },
-              { id: "female", label: "Female", count: femaleCount, icon: "bi-gender-female" },
               { id: "online-host", label: "Online Host", count: onlineHostCount, icon: "bi-broadcast" },
               { id: "online-user", label: "Online User", count: onlineUserCount, icon: "bi-person-fill" },
-              { id: "xxxl", label: "XXXL", count: xxxlCount },
+              { id: "male", label: "Male", count: maleCount, icon: "bi-gender-male" },
+              { id: "female", label: "Female", count: femaleCount, icon: "bi-gender-female" },
+              
             ].map((chip) => (
               <button
                 key={chip.id}
@@ -1579,11 +1660,12 @@ export default function ChatPage() {
                   </div>
                 )}
 
-                {selectedFile && (
+                {selectedFile && !isImageAttachment && (
                   <div className="selected-file-preview">
                     <span>{selectedFile.name}</span>
 
                     <button
+                      type="button"
                       onClick={() => setSelectedFile(null)}
                       className="btn btn-sm btn-danger"
                     >
@@ -1604,15 +1686,11 @@ export default function ChatPage() {
                 </button>
                 <label className="cp-attachment-btn" style={{ cursor: "pointer", marginRight: 8 }}>
                   <input
+                    ref={fileInputRef}
                     type="file"
+                    accept="image/*"
                     style={{ display: "none" }}
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-
-                      if (file) {
-                        setSelectedFile(file);
-                      }
-                    }}
+                    onChange={pickAttachment}
                   />
                   <i
                     className="bi bi-paperclip"
@@ -1658,6 +1736,49 @@ export default function ChatPage() {
                     </button>
                   </div>
                 )}
+              </div>
+            )}
+
+            {filePreviewUrl && (
+              <div className="cp-image-preview">
+                <button
+                  type="button"
+                  className="cp-image-preview-close"
+                  aria-label="Remove image"
+                  onClick={() => setSelectedFile(null)}
+                >
+                  <i className="bi bi-x-lg" />
+                </button>
+                <div className="cp-image-preview-stage">
+                  <img src={filePreviewUrl} alt={selectedFile?.name || "Selected"} />
+                </div>
+                <input
+                  value={text}
+                  onChange={(e) => setText(e.target.value)}
+                  placeholder="Type a message"
+                  className="cp-image-preview-caption"
+                  onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+                />
+                <div className="cp-image-preview-footer">
+                  <img className="cp-image-preview-thumb" src={filePreviewUrl} alt="" />
+                  <button
+                    type="button"
+                    className="cp-image-preview-add"
+                    aria-label="Choose another image"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    +
+                  </button>
+                  <button
+                    type="button"
+                    className="cp-image-preview-send"
+                    aria-label="Send image"
+                    disabled={isSending}
+                    onClick={sendMessage}
+                  >
+                    <i className={`bi ${isSending ? "bi-hourglass-split" : "bi-send-fill"}`} />
+                  </button>
+                </div>
               </div>
             )}
           </>

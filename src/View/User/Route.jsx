@@ -10,6 +10,7 @@ import LiveBrowse from "./Pages/LiveBrowse";
 import LiveRoom from "./Pages/LiveRoom";
 import React from "react";
 import MyProfile from "./Pages/MyProfile";
+import ProjectPdf from "./Pages/ProjectPdf";
 import { Navigate, useLocation } from "react-router-dom";
 import { appRoute, isGuest, isLoggedIn } from "../../utils/auth";
 
@@ -44,6 +45,7 @@ const Routes = [
       { path: "/referral", element: <Referral /> },
       { path: "/team", element: <MyTeam /> },
       { path: "/tree", element: <TeamTree /> },
+      { path: "/project-pdf", element: <ProjectPdf /> },
       { path: "/offers", element: <Navigate to="/wallet" replace /> },
       { path: "/plans", element: <Navigate to="/wallet" replace /> },
       { path: "/level", element: <Navigate to="/dashboard" replace /> },

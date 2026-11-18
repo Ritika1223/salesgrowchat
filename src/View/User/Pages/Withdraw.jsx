@@ -95,6 +95,12 @@ export default function Withdraw() {
 
   if (notHost) return <Navigate to="/dashboard" replace />;
 
+  const withdrawn = requests
+    .filter((row) => String(row.status || "").toLowerCase() === "approved")
+    .reduce((sum, row) => sum + Number(row.amount || 0), 0);
+  const total = balance + withdrawn;
+  const coins = (value) => `${Number(value || 0).toLocaleString()} coins`;
+
   return (
     <div className="wallet-page">
       <div className="container-fluid">
@@ -112,33 +118,33 @@ export default function Withdraw() {
           </div>
         </div>
 
-        <div className="wallet-history-card" style={{ marginBottom: 18 }}>
-          <div className="wallet-history-head">
-            <div>
-              <h2>Coin balance</h2>
-              <p>Pending requests stay reserved until admin decides.</p>
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-md-4">
-              <h4>{balance.toLocaleString()} coins</h4>
-              <p>Balance</p>
-            </div>
-            <div className="col-md-4">
-              <h4>{pending.toLocaleString()} coins</h4>
-              <p>Pending</p>
-            </div>
-            <div className="col-md-4">
-              <h4>{available.toLocaleString()} coins</h4>
-              <p>Available</p>
-            </div>
-          </div>
-        </div>
-
         <div className="income-history-card fund-request-form">
           {withdrawStopped ? (
             <p className="wallet-error">
               Withdrawal is stopped for your account. Please contact admin.
+            </p>
+          ) : null}
+          <div className="withdraw-summary">
+            <div className="withdraw-summary-item">
+              <span>Available balance</span>
+              <strong>{pageLoading ? "..." : coins(available)}</strong>
+            </div>
+            <div className="withdraw-summary-item">
+              <span>Total amount</span>
+              <strong>{pageLoading ? "..." : coins(total)}</strong>
+            </div>
+            <div className="withdraw-summary-item">
+              <span>Withdrawn</span>
+              <strong>{pageLoading ? "..." : coins(withdrawn)}</strong>
+            </div>
+            <div className="withdraw-summary-item">
+              <span>Pending</span>
+              <strong>{pageLoading ? "..." : coins(pending)}</strong>
+            </div>
+          </div>
+          {!pageLoading && pending > 0 ? (
+            <p className="withdraw-inr-note">
+              {coins(pending)} is already held by a pending withdrawal, so it is not part of the available balance.
             </p>
           ) : null}
           <form className="payment-form" onSubmit={handleSubmit}>

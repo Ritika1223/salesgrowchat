@@ -6708,25 +6708,36 @@ textarea::placeholder {
   }
   .chat-page.cp-mobile.cp-show-chat .chat-window{
     display: flex;
+    width: 100%;
+    border-radius: 0;
+    background: transparent;
+  }
+
+  .chat-page.cp-mobile.cp-show-chat{
+    padding: 0;
+    border-radius: 0;
   }
 
   .chat-header{
     position: sticky;
     top: 0;
     z-index: 5;
-    border-radius: 25px 25px 0 0;
+    border-radius: 0;
+    background: transparent;
+    backdrop-filter: none;
   }
 
 .cp-groupchat-header {
 	position: absolute;
 	padding-left: 8px;
-	background: #000;
+	background: transparent;
+	border-radius: 0;
 	width: 100%;
 }
 
 .cp-groupchat-input-row {
 	padding: 8PX;
-	border-radius: 0 0 22px 22px;
+	border-radius: 0;
 	position: absolute;
 	bottom: 1px;
 }
@@ -14797,6 +14808,122 @@ height: 100%;
   font-weight: 600;
   font-size: 15px;
   box-shadow: 0 10px 30px rgba(140,82,255,0.25);
+}
+
+.selected-file-preview {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: calc(100% + 6px);
+  z-index: 7;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  background: rgba(11, 30, 48, 0.94);
+  color: #fff;
+}
+
+.cp-image-preview {
+  position: absolute;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  flex-direction: column;
+  background: #1a1d21;
+  color: #fff;
+}
+
+.cp-image-preview-close {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 2;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-size: 18px;
+}
+
+.cp-image-preview-stage {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 18px 12px;
+}
+
+.cp-image-preview-stage img {
+  max-width: min(100%, 420px);
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 6px;
+}
+
+.cp-image-preview-caption {
+  margin: 8px 14px 4px;
+  height: 46px;
+  border: none;
+  border-radius: 24px;
+  background: #2a2f34;
+  color: #fff;
+  padding: 0 16px;
+  font-size: 15px;
+  outline: none;
+}
+
+.cp-image-preview-caption::placeholder {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.cp-image-preview-footer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px 16px;
+}
+
+.cp-image-preview-thumb {
+  width: 54px;
+  height: 54px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 2px solid #22c55e;
+  background: #111;
+}
+
+.cp-image-preview-add {
+  width: 54px;
+  height: 54px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: transparent;
+  color: #fff;
+  font-size: 32px;
+  line-height: 1;
+}
+
+.cp-image-preview-send {
+  margin-left: auto;
+  width: 58px;
+  height: 58px;
+  border: none;
+  border-radius: 50%;
+  background: #22c55e;
+  color: #fff;
+  font-size: 22px;
+  display: grid;
+  place-items: center;
+}
+
+.cp-image-preview-send:disabled {
+  opacity: 0.7;
 }
 
 /* EMOJI */

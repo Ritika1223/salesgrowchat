@@ -188,6 +188,38 @@ aside.sidebar {
   max-width: 560px;
 }
 
+.withdraw-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.withdraw-summary-item {
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--color-primary) 8%, var(--color-surface));
+  border: 1px solid var(--color-line);
+}
+
+.withdraw-summary-item span {
+  display: block;
+  font-size: 12px;
+  opacity: 0.75;
+}
+
+.withdraw-summary-item strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 18px;
+}
+
+.withdraw-inr-note {
+  margin: 6px 0 14px;
+  font-size: 12px;
+  opacity: 0.75;
+}
+
 .fund-request-form .wallet-input,
 .fund-request-form label,
 .fund-request-form p {
@@ -943,6 +975,51 @@ select:-webkit-autofill {
 .app > main .chat-page .chat-messages,
 .app > main .chat-page .cp-groupchat-messages {
   background: var(--color-bg) !important;
+}
+
+/* Open chat: header and message area are see-through, edge to edge, square. */
+@media (max-width: 768px) {
+  .app > main .chat-page.cp-mobile.cp-show-chat {
+    padding: 0 !important;
+    gap: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: calc(100dvh - 88px - env(safe-area-inset-bottom, 0px)) !important;
+    max-height: calc(100dvh - 88px - env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  .app > main .chat-page.cp-mobile.cp-show-chat .chat-window {
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    outline: none !important;
+    width: 100% !important;
+    inset: 0 !important;
+  }
+
+  .app > main .chat-page.cp-mobile.cp-show-chat .chat-header,
+  .app > main .chat-page.cp-mobile.cp-show-chat .cp-groupchat-header,
+  .app > main .chat-page.cp-mobile.cp-show-chat .chat-messages,
+  .app > main .chat-page.cp-mobile.cp-show-chat .cp-groupchat-messages,
+  .app > main .chat-page.cp-mobile.cp-show-chat .messages-body {
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  .app > main .chat-page.cp-mobile.cp-show-chat .chat-username,
+  .app > main .chat-page.cp-mobile.cp-show-chat .chat-status {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.55);
+  }
 }
 
 .app > main .chat-page .cp-chat-text-input,
